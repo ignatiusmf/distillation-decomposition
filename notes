@@ -1,0 +1,11 @@
+module load chpc/python/anaconda/3-2024.10.1
+module load gcc/9.2.0
+
+source /home/iferreira/myenv/bin/activate
+
+rsync -avz --exclude='experiments/' --exclude='models/' --exclude='data/' /home/ignatius/studies/repos/distillation-decomposition/ iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/
+
+rsync -avz --include='experiments/***' --include='models/***' --exclude='*' iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/ /home/ignatius/studies/repos/distillation-decomposition/
+
+
+Ek moet chpc job submission abstract. Soos anders moet ek elke project n run.job weer oor define. Neeman.

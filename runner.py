@@ -34,17 +34,37 @@ def generate_pbs_script(python_cmd, experiment_name):
     finally:
         temp_file.unlink(missing_ok=True)
 
-def check_path_and_skip(experiment_name):
-    experiment_path = Path(f'experiments/{experiment_name}')
+
+def is_training_complete(dataset, method, model_name, seed, teacher_model=None):
+    """Check if training is already completed for a given configuration."""
+    import json
+    if method == 'pure':
+        status_path = Path(f'models/{dataset}/pure/{model_name}/{seed}/status.json')
+    else:
+        status_path = Path(f'models/{dataset}/{method}/{teacher_model}_to_{model_name}/{seed}/status.json')
+    
+    if status_path.exists():
+        with open(status_path, 'r') as f:
+            status = json.load(f)
+            return status.get('status') == 'completed'
+    return False
+
+
+def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model=None):
+    """
+    Check if training is already completed for this configuration.
+    Returns True if we should skip (already completed), False if we should run.
+    """
     global total, limit
     if total == limit: 
         print('Queue limit reached, exiting')
         exit()
 
-    if experiment_path.exists():
+    # Check the status.json in the model directory
+    if is_training_complete(dataset, 'pure' if distillation == 'none' else distillation, 
+                            model, seed, teacher_model):
         return True
 
-    experiment_path.mkdir(parents=True)
     total += 1
     return False
 
@@ -70,21 +90,6 @@ def get_teacher_weights_path(dataset, teacher_model, seed):
     return f"models/{dataset}/pure/{teacher_model}/{seed}/best.pth"
 
 
-def is_training_complete(dataset, method, model_name, seed, teacher_model=None):
-    """Check if training is already completed for a given configuration."""
-    import json
-    if method == 'pure':
-        status_path = Path(f'models/{dataset}/pure/{model_name}/{seed}/status.json')
-    else:
-        status_path = Path(f'models/{dataset}/{method}/{teacher_model}_to_{model_name}/{seed}/status.json')
-    
-    if status_path.exists():
-        with open(status_path, 'r') as f:
-            status = json.load(f)
-            return status.get('status') == 'completed'
-    return False
-
-
 # ============================================================================
 # EXPERIMENT CONFIGURATION
 # ============================================================================
@@ -96,39 +101,39 @@ dataset = 'Cifar10'
 pure_models = ['ResNet56']
 for run in range(runs):
     for model in pure_models:
+        if check_path_and_skip(model, dataset, run): continue
         experiment_name = f'{dataset}/pure/{model}/{run}'
-        if check_path_and_skip(experiment_name): continue
         python_cmd = generate_python_cmd(experiment_name, model, dataset)
         generate_pbs_script(python_cmd, experiment_name)
 
 # --- Distillation experiments ---
 # Uncomment and configure as needed
 
-# # Logit distillation: ResNet112 -> ResNet20
-# teacher_model = 'ResNet112'
-# student_model = 'ResNet20'
-# for run in range(runs):
-#     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-#     experiment_name = f'{dataset}/logit/{teacher_model}_to_{student_model}/{run}'
-#     if check_path_and_skip(experiment_name): continue
-#     python_cmd = generate_python_cmd(
-#         experiment_name, student_model, dataset,
-#         distillation='logit', teacher_model=teacher_model,
-#         teacher_weights=teacher_weights, alpha=0.5, temperature=4.0
-#     )
-#     generate_pbs_script(python_cmd, experiment_name)
+# Logit distillation: ResNet112 -> ResNet20
+teacher_model = 'ResNet112'
+student_model = 'ResNet56'
+for run in range(runs):
+    if check_path_and_skip(student_model, dataset, run, distillation='logit', teacher_model=teacher_model): continue
+    teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
+    experiment_name = f'{dataset}/logit/{teacher_model}_to_{student_model}/{run}'
+    python_cmd = generate_python_cmd(
+        experiment_name, student_model, dataset,
+        distillation='logit', teacher_model=teacher_model,
+        teacher_weights=teacher_weights, alpha=0.5, temperature=4.0
+    )
+    generate_pbs_script(python_cmd, experiment_name)
 
-# # Factor transfer: ResNet112 -> ResNet20
-# for run in range(runs):
-#     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-#     experiment_name = f'{dataset}/factor_transfer/{teacher_model}_to_{student_model}/{run}'
-#     if check_path_and_skip(experiment_name): continue
-#     python_cmd = generate_python_cmd(
-#         experiment_name, student_model, dataset,
-#         distillation='factor_transfer', teacher_model=teacher_model,
-#         teacher_weights=teacher_weights, alpha=0.5
-#     )
-#     generate_pbs_script(python_cmd, experiment_name)
+# Factor transfer: ResNet112 -> ResNet20
+for run in range(runs):
+    if check_path_and_skip(student_model, dataset, run, distillation='factor_transfer', teacher_model=teacher_model): continue
+    teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
+    experiment_name = f'{dataset}/factor_transfer/{teacher_model}_to_{student_model}/{run}'
+    python_cmd = generate_python_cmd(
+        experiment_name, student_model, dataset,
+        distillation='factor_transfer', teacher_model=teacher_model,
+        teacher_weights=teacher_weights, alpha=0.5
+    )
+    generate_pbs_script(python_cmd, experiment_name)
 
 
 print('All experiments are finished / queued')

@@ -1,0 +1,8 @@
+Sat Feb  7 22:35:00 SAST 2026
+Running python train.py --experiment_name Cifar10/factor_transfer/ResNet112_to_ResNet56/2 --model ResNet56 --dataset Cifar10 --distillation factor_transfer --teacher_model ResNet112 --teacher_weights models/Cifar10/pure/ResNet112/2/best.pth --alpha 0.5
+
+{'experiment_name': 'Cifar10/factor_transfer/ResNet112_to_ResNet56/2', 'model': 'ResNet56', 'dataset': 'Cifar10', 'distillation': 'factor_transfer', 'teacher_model': 'ResNet112', 'teacher_weights': 'models/Cifar10/pure/ResNet112/2/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'resume': False, 'force_restart': False} seed=2
+Files already downloaded and verified
+Files already downloaded and verified
+
+Total execution time: 6 seconds

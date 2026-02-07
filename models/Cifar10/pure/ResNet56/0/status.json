@@ -1,0 +1,17 @@
+{
+  "status": "completed",
+  "epoch": 150,
+  "max_acc": 93.11,
+  "config": {
+    "experiment_name": "Cifar10/pure/ResNet56/0",
+    "model": "ResNet56",
+    "dataset": "Cifar10",
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "resume": false,
+    "force_restart": false
+  }
+}
