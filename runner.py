@@ -39,9 +39,9 @@ def is_training_complete(dataset, method, model_name, seed, teacher_model=None):
     """Check if training is already completed for a given configuration."""
     import json
     if method == 'pure':
-        status_path = Path(f'models/{dataset}/pure/{model_name}/{seed}/status.json')
+        status_path = Path(f'experiments/{dataset}/pure/{model_name}/{seed}/status.json')
     else:
-        status_path = Path(f'models/{dataset}/{method}/{teacher_model}_to_{model_name}/{seed}/status.json')
+        status_path = Path(f'experiments/{dataset}/{method}/{teacher_model}_to_{model_name}/{seed}/status.json')
     
     if status_path.exists():
         with open(status_path, 'r') as f:
@@ -60,7 +60,7 @@ def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model
         print('Queue limit reached, exiting')
         exit()
 
-    # Check the status.json in the model directory
+    # Check the status.json in the experiment directory
     if is_training_complete(dataset, 'pure' if distillation == 'none' else distillation, 
                             model, seed, teacher_model):
         return True
@@ -68,10 +68,10 @@ def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model
     total += 1
     return False
 
-def generate_python_cmd(experiment_name, model, dataset, distillation='none', 
+def generate_python_cmd(model, dataset, seed, distillation='none', 
                         teacher_model=None, teacher_weights=None, alpha=0.5, temperature=4.0):
     """Generate the python command for training."""
-    cmd = f"python train.py --experiment_name {experiment_name} --model {model} --dataset {dataset}"
+    cmd = f"python train.py --model {model} --dataset {dataset} --seed {seed}"
     
     if distillation != 'none':
         cmd += f" --distillation {distillation}"
@@ -87,7 +87,15 @@ def generate_python_cmd(experiment_name, model, dataset, distillation='none',
 
 def get_teacher_weights_path(dataset, teacher_model, seed):
     """Get the path to a trained teacher model (best.pth)."""
-    return f"models/{dataset}/pure/{teacher_model}/{seed}/best.pth"
+    return f"experiments/{dataset}/pure/{teacher_model}/{seed}/best.pth"
+
+
+def get_experiment_name(dataset, model, seed, distillation='none', teacher_model=None):
+    """Get the experiment name/path for PBS job naming."""
+    if distillation == 'none':
+        return f'{dataset}/pure/{model}/{seed}'
+    else:
+        return f'{dataset}/{distillation}/{teacher_model}_to_{model}/{seed}'
 
 
 # ============================================================================
@@ -95,15 +103,15 @@ def get_teacher_weights_path(dataset, teacher_model, seed):
 # ============================================================================
 
 runs = 3
-dataset = 'Cifar10'
+dataset = 'Cifar100'
 
 # --- Pure training (no distillation) ---
-pure_models = ['ResNet56']
+pure_models = ['ResNet112']
 for run in range(runs):
     for model in pure_models:
         if check_path_and_skip(model, dataset, run): continue
-        experiment_name = f'{dataset}/pure/{model}/{run}'
-        python_cmd = generate_python_cmd(experiment_name, model, dataset)
+        experiment_name = get_experiment_name(dataset, model, run)
+        python_cmd = generate_python_cmd(model, dataset, run)
         generate_pbs_script(python_cmd, experiment_name)
 
 # --- Distillation experiments ---
@@ -115,9 +123,9 @@ student_model = 'ResNet56'
 for run in range(runs):
     if check_path_and_skip(student_model, dataset, run, distillation='logit', teacher_model=teacher_model): continue
     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-    experiment_name = f'{dataset}/logit/{teacher_model}_to_{student_model}/{run}'
+    experiment_name = get_experiment_name(dataset, student_model, run, distillation='logit', teacher_model=teacher_model)
     python_cmd = generate_python_cmd(
-        experiment_name, student_model, dataset,
+        student_model, dataset, run,
         distillation='logit', teacher_model=teacher_model,
         teacher_weights=teacher_weights, alpha=0.5, temperature=4.0
     )
@@ -127,9 +135,9 @@ for run in range(runs):
 for run in range(runs):
     if check_path_and_skip(student_model, dataset, run, distillation='factor_transfer', teacher_model=teacher_model): continue
     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-    experiment_name = f'{dataset}/factor_transfer/{teacher_model}_to_{student_model}/{run}'
+    experiment_name = get_experiment_name(dataset, student_model, run, distillation='factor_transfer', teacher_model=teacher_model)
     python_cmd = generate_python_cmd(
-        experiment_name, student_model, dataset,
+        student_model, dataset, run,
         distillation='factor_transfer', teacher_model=teacher_model,
         teacher_weights=teacher_weights, alpha=0.5
     )
@@ -143,21 +151,22 @@ print('All experiments are finished / queued')
 # TEST COMMANDS - Run these manually to verify everything works
 # ============================================================================
 # 
-# NEW DIRECTORY STRUCTURE:
-#   models/
+# DIRECTORY STRUCTURE (everything in experiments/):
+#   experiments/
 #   └── Cifar10/
 #       ├── pure/
 #       │   └── ResNet56/
 #       │       └── 0/
 #       │           ├── best.pth        # Best model weights (for inference/teacher)
 #       │           ├── checkpoint.pth  # Full training state (for resume)
-#       │           └── status.json     # Training status
+#       │           ├── status.json     # Training status
+#       │           ├── metrics.json    # Training metrics
+#       │           ├── Loss.png        # Loss plot
+#       │           └── Accuracy.png    # Accuracy plot
 #       └── logit/
 #           └── ResNet56_to_ResNetBaby/
 #               └── 0/
-#                   ├── best.pth
-#                   ├── checkpoint.pth
-#                   └── status.json
+#                   └── ...
 #
 # RESUMPTION BEHAVIOR:
 #   - If status.json says "completed", training exits immediately
@@ -167,34 +176,25 @@ print('All experiments are finished / queued')
 # Quick test commands:
 # 
 # 1. PURE TRAINING - Train a teacher model (ResNet56):
-#    python train.py --experiment_name test/pure/ResNet56/0 --model ResNet56 --dataset Cifar10
+#    python train.py --model ResNet56 --dataset Cifar10 --seed 0
 #
 # 2. RESUME INTERRUPTED TRAINING (automatic if checkpoint exists):
-#    python train.py --experiment_name test/pure/ResNet56/0 --model ResNet56 --dataset Cifar10
+#    python train.py --model ResNet56 --dataset Cifar10 --seed 0
 #    (Will automatically resume from where it left off)
 #
 # 3. FORCE RESTART (ignore existing checkpoint):
-#    python train.py --experiment_name test/pure/ResNet56/0 --model ResNet56 --dataset Cifar10 --force_restart
+#    python train.py --model ResNet56 --dataset Cifar10 --seed 0 --force_restart
 #
 # 4. LOGIT DISTILLATION - ResNet56 teacher -> ResNetBaby student:
-#    python train.py --experiment_name test/logit/ResNet56_to_ResNetBaby/0 \
-#        --model ResNetBaby --dataset Cifar10 \
+#    python train.py --model ResNetBaby --dataset Cifar10 --seed 0 \
 #        --distillation logit --teacher_model ResNet56 \
-#        --teacher_weights models/Cifar10/pure/ResNet56/0/best.pth \
+#        --teacher_weights experiments/Cifar10/pure/ResNet56/0/best.pth \
 #        --alpha 0.5 --temperature 4.0
 #
 # 5. FACTOR TRANSFER - ResNet56 teacher -> ResNetBaby student:
-#    python train.py --experiment_name test/factor_transfer/ResNet56_to_ResNetBaby/0 \
-#        --model ResNetBaby --dataset Cifar10 \
+#    python train.py --model ResNetBaby --dataset Cifar10 --seed 0 \
 #        --distillation factor_transfer --teacher_model ResNet56 \
-#        --teacher_weights models/Cifar10/pure/ResNet56/0/best.pth \
+#        --teacher_weights experiments/Cifar10/pure/ResNet56/0/best.pth \
 #        --alpha 0.5
-#
-# 6. DIFFERENT ALPHA VALUES:
-#    python train.py --experiment_name test/logit_alpha0.3/ResNet56_to_ResNetBaby/0 \
-#        --model ResNetBaby --dataset Cifar10 \
-#        --distillation logit --teacher_model ResNet56 \
-#        --teacher_weights models/Cifar10/pure/ResNet56/0/best.pth \
-#        --alpha 0.3 --temperature 4.0
 #
 # ============================================================================

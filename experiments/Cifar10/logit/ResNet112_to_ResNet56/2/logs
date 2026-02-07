@@ -1,8 +1,8 @@
-Sat Feb  7 22:33:43 SAST 2026
-Running python train.py --experiment_name Cifar10/logit/ResNet112_to_ResNet56/2 --model ResNet56 --dataset Cifar10 --distillation logit --teacher_model ResNet112 --teacher_weights models/Cifar10/pure/ResNet112/2/best.pth --alpha 0.5 --temperature 4.0
+Sat Feb  7 23:24:59 SAST 2026
+Running python train.py --model ResNet56 --dataset Cifar10 --seed 2 --distillation logit --teacher_model ResNet112 --teacher_weights experiments/Cifar10/pure/ResNet112/2/best.pth --alpha 0.5 --temperature 4.0
 
-{'experiment_name': 'Cifar10/logit/ResNet112_to_ResNet56/2', 'model': 'ResNet56', 'dataset': 'Cifar10', 'distillation': 'logit', 'teacher_model': 'ResNet112', 'teacher_weights': 'models/Cifar10/pure/ResNet112/2/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'resume': False, 'force_restart': False} seed=2
+{'model': 'ResNet56', 'dataset': 'Cifar10', 'seed': 2, 'distillation': 'logit', 'teacher_model': 'ResNet112', 'teacher_weights': 'experiments/Cifar10/pure/ResNet112/2/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=2
 Files already downloaded and verified
 Files already downloaded and verified
 
-Total execution time: 5 seconds
+Total execution time: 6 seconds

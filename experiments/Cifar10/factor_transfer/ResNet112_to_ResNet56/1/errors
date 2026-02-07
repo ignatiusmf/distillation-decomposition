@@ -1,6 +1,6 @@
 INFO: chpc/python/anaconda/3-2024.10.1 loaded
 Traceback (most recent call last):
-  File "/mnt/lustre/users/iferreira/distillation-decomposition/train.py", line 124, in <module>
+  File "/mnt/lustre/users/iferreira/distillation-decomposition/train.py", line 118, in <module>
     checkpoint = torch.load(args.teacher_weights, map_location=DEVICE, weights_only=True)
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/iferreira/myenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
@@ -12,4 +12,4 @@ Traceback (most recent call last):
   File "/home/iferreira/myenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
     super().__init__(open(name, mode))
                      ^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'models/Cifar10/pure/ResNet112/1/best.pth'
+FileNotFoundError: [Errno 2] No such file or directory: 'experiments/Cifar10/pure/ResNet112/1/best.pth'

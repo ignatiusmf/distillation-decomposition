@@ -33,9 +33,9 @@ DATASETS = {
 }
 
 parser = argparse.ArgumentParser(description='Run a training script with custom parameters.')
-parser.add_argument('--experiment_name', type=str, default='default')
 parser.add_argument('--model', type=str, default='ResNet112', choices=MODELS.keys())
 parser.add_argument('--dataset', type=str, default='Cifar100', choices=DATASETS.keys())
+parser.add_argument('--seed', type=int, default=0, help='Random seed for reproducibility')
 
 # Distillation arguments
 parser.add_argument('--distillation', type=str, default='none', choices=DISTILLATION_METHODS.keys(),
@@ -50,8 +50,6 @@ parser.add_argument('--temperature', type=float, default=4.0,
                     help='Temperature for logit distillation')
 
 # Resume/checkpoint arguments
-parser.add_argument('--resume', action='store_true',
-                    help='Resume training from checkpoint if available')
 parser.add_argument('--force_restart', action='store_true',
                     help='Force restart training even if checkpoint exists')
 
@@ -62,26 +60,22 @@ if args.distillation != 'none':
     if args.teacher_model is None or args.teacher_weights is None:
         parser.error("--teacher_model and --teacher_weights required when using distillation")
 
-EXPERIMENT_PATH = args.experiment_name
 MODEL = args.model
 DATASET = args.dataset
-seed = int(EXPERIMENT_PATH.split('/')[-1]) if EXPERIMENT_PATH.split('/')[-1].isdigit() else 0
+seed = args.seed
 
-# Setup directories
-experiment_dir = Path(f"experiments/{EXPERIMENT_PATH}")
+# Setup directories - everything goes in experiments/
+# Structure: experiments/[dataset]/[method]/[model_name]/[seed]/
+if args.distillation == 'none':
+    experiment_dir = Path(f'experiments/{DATASET}/pure/{MODEL}/{seed}')
+else:
+    experiment_dir = Path(f'experiments/{DATASET}/{args.distillation}/{args.teacher_model}_to_{MODEL}/{seed}')
 experiment_dir.mkdir(parents=True, exist_ok=True)
 
-# Model directory structure: models/[dataset]/[method]/[model_name]/[seed]/
-if args.distillation == 'none':
-    model_dir = Path(f'models/{DATASET}/pure/{MODEL}/{seed}')
-else:
-    model_dir = Path(f'models/{DATASET}/{args.distillation}/{args.teacher_model}_to_{MODEL}/{seed}')
-model_dir.mkdir(parents=True, exist_ok=True)
-
-# Checkpoint paths
-checkpoint_path = model_dir / 'checkpoint.pth'  # Latest training state
-best_model_path = model_dir / 'best.pth'        # Best model weights only
-status_path = model_dir / 'status.json'         # Training status
+# Checkpoint paths (all in experiment_dir)
+checkpoint_path = experiment_dir / 'checkpoint.pth'  # Latest training state
+best_model_path = experiment_dir / 'best.pth'        # Best model weights only
+status_path = experiment_dir / 'status.json'         # Training status
 
 def load_status():
     """Load training status from file."""
@@ -98,7 +92,7 @@ def save_status(status_dict):
 # Check if training is already complete
 status = load_status()
 if status['status'] == 'completed' and not args.force_restart:
-    print(f"Training already completed for {model_dir}")
+    print(f"Training already completed for {experiment_dir}")
     print(f"  Best accuracy: {status['max_acc']:.2f}%")
     print(f"  Use --force_restart to retrain from scratch")
     sys.exit(0)
@@ -251,14 +245,14 @@ for i in range(start_epoch, EPOCHS):
     # Update status
     save_status({'status': 'in_progress', 'epoch': i, 'max_acc': max_acc, 'config': vars(args)})
     
-    plot_the_things(train_loss, test_loss, train_acc, test_acc, EXPERIMENT_PATH)
+    plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_dir)
 
 # Mark training as completed
 save_status({'status': 'completed', 'epoch': EPOCHS, 'max_acc': max_acc, 'config': vars(args)})
 print(f"\nTraining completed! Best accuracy: {max_acc:.2f}%")
 print(f"Best model saved to: {best_model_path}")
 
-with open(f'experiments/{EXPERIMENT_PATH}/metrics.json', 'w') as f:
+with open(experiment_dir / 'metrics.json', 'w') as f:
     json.dump({
         'train_loss': train_loss,
         'train_acc': train_acc,

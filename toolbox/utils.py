@@ -19,7 +19,8 @@ def evaluate_model(model, loader):
     return val_loss/(b_idx+1), correct*100/total
 
 
-def plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_path):
+def plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_dir):
+        """Save loss and accuracy plots to experiment_dir (Path or string)."""
         plt.plot(np.array(train_loss), linestyle='dotted',color='b', label=f'Train Loss')
         plt.plot(np.array(test_loss), linestyle='solid',color='b', label=f'Test Loss')
 
@@ -28,7 +29,7 @@ def plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_path)
         plt.ylabel('Loss')
     
         plt.legend()
-        plt.savefig(f'experiments/{experiment_path}/Loss.png')
+        plt.savefig(f'{experiment_dir}/Loss.png')
         plt.close()
 
         max_acc = np.max(np.array(test_acc))
@@ -48,5 +49,5 @@ def plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_path)
 
 
         plt.legend()
-        plt.savefig(f'experiments/{experiment_path}/Accuracy.png')
+        plt.savefig(f'{experiment_dir}/Accuracy.png')
         plt.close()

@@ -1,8 +1,9 @@
-Sat Feb  7 22:32:51 SAST 2026
-Running python train.py --experiment_name Cifar10/logit/ResNet112_to_ResNet56/0 --model ResNet56 --dataset Cifar10 --distillation logit --teacher_model ResNet112 --teacher_weights models/Cifar10/pure/ResNet112/0/best.pth --alpha 0.5 --temperature 4.0
+Sat Feb  7 23:24:26 SAST 2026
+Running python train.py --model ResNet56 --dataset Cifar10 --seed 0 --distillation logit --teacher_model ResNet112 --teacher_weights experiments/Cifar10/pure/ResNet112/0/best.pth --alpha 0.5 --temperature 4.0
 
-{'experiment_name': 'Cifar10/logit/ResNet112_to_ResNet56/0', 'model': 'ResNet56', 'dataset': 'Cifar10', 'distillation': 'logit', 'teacher_model': 'ResNet112', 'teacher_weights': 'models/Cifar10/pure/ResNet112/0/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'resume': False, 'force_restart': False} seed=0
-Files already downloaded and verified
+{'model': 'ResNet56', 'dataset': 'Cifar10', 'seed': 0, 'distillation': 'logit', 'teacher_model': 'ResNet112', 'teacher_weights': 'experiments/Cifar10/pure/ResNet112/0/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Downloading https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz to ./data/cifar-10-python.tar.gz
+Extracting ./data/cifar-10-python.tar.gz to ./data
 Files already downloaded and verified
 
-Total execution time: 6 seconds
+Total execution time: 22 seconds
