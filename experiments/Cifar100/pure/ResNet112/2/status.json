@@ -1,0 +1,16 @@
+{
+  "status": "in_progress",
+  "epoch": 35,
+  "max_acc": 43.9,
+  "config": {
+    "model": "ResNet112",
+    "dataset": "Cifar100",
+    "seed": 2,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  }
+}
