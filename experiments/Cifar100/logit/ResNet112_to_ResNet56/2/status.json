@@ -1,14 +1,14 @@
 {
   "status": "completed",
   "epoch": 150,
-  "max_acc": 69.39,
+  "max_acc": 73.16,
   "config": {
     "model": "ResNet56",
     "dataset": "Cifar100",
-    "seed": 0,
+    "seed": 2,
     "distillation": "logit",
     "teacher_model": "ResNet112",
-    "teacher_weights": "experiments/Cifar100/pure/ResNet112/0/best.pth",
+    "teacher_weights": "experiments/Cifar100/pure/ResNet112/2/best.pth",
     "alpha": 0.5,
     "temperature": 4.0,
     "force_restart": false
