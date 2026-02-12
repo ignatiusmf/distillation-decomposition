@@ -1,7 +1,0 @@
-#!/bin/bash
-
-
-
-rsync -avz /home/ignatius/studies/repos/distillation-decomposition iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/
-
-# --delete
