@@ -101,100 +101,38 @@ def get_experiment_name(dataset, model, seed, distillation='none', teacher_model
 # ============================================================================
 # EXPERIMENT CONFIGURATION
 # ============================================================================
+# Pure baselines queue before distillation so teacher weights exist.
+# The check_path_and_skip mechanism ensures completed runs are skipped.
+# ============================================================================
 
 runs = 3
-dataset = 'Cifar100'
-
-# --- Pure training (no distillation) ---
-pure_models = ['ResNet112']
-for run in range(runs):
-    for model in pure_models:
-        if check_path_and_skip(model, dataset, run): continue
-        experiment_name = get_experiment_name(dataset, model, run)
-        python_cmd = generate_python_cmd(model, dataset, run)
-        generate_pbs_script(python_cmd, experiment_name)
-
-# --- Distillation experiments ---
-# Uncomment and configure as needed
-
-# Logit distillation: ResNet112 -> ResNet20
+datasets = ['Cifar100', 'Cifar10']
 teacher_model = 'ResNet112'
-student_model = 'ResNet56'
-for run in range(runs):
-    if check_path_and_skip(student_model, dataset, run, distillation='logit', teacher_model=teacher_model): continue
-    teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-    experiment_name = get_experiment_name(dataset, student_model, run, distillation='logit', teacher_model=teacher_model)
-    python_cmd = generate_python_cmd(
-        student_model, dataset, run,
-        distillation='logit', teacher_model=teacher_model,
-        teacher_weights=teacher_weights, alpha=0.5, temperature=4.0
-    )
-    generate_pbs_script(python_cmd, experiment_name)
+student_models = ['ResNet56']
 
-# Factor transfer: ResNet112 -> ResNet20
-for run in range(runs):
-    if check_path_and_skip(student_model, dataset, run, distillation='factor_transfer', teacher_model=teacher_model): continue
-    teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-    experiment_name = get_experiment_name(dataset, student_model, run, distillation='factor_transfer', teacher_model=teacher_model)
-    python_cmd = generate_python_cmd(
-        student_model, dataset, run,
-        distillation='factor_transfer', teacher_model=teacher_model,
-        teacher_weights=teacher_weights, alpha=0.5
-    )
-    generate_pbs_script(python_cmd, experiment_name)
+for dataset in datasets:
+    # --- Pure training (teacher + student baselines) ---
+    for model in [teacher_model] + student_models:
+        for run in range(runs):
+            if check_path_and_skip(model, dataset, run): continue
+            experiment_name = get_experiment_name(dataset, model, run)
+            python_cmd = generate_python_cmd(model, dataset, run)
+            generate_pbs_script(python_cmd, experiment_name)
 
+    # --- Distillation: teacher -> each student, both methods ---
+    for student_model in student_models:
+        for method in ['logit', 'factor_transfer']:
+            for run in range(runs):
+                if check_path_and_skip(student_model, dataset, run,
+                                       distillation=method, teacher_model=teacher_model): continue
+                teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
+                experiment_name = get_experiment_name(dataset, student_model, run,
+                                                     distillation=method, teacher_model=teacher_model)
+                python_cmd = generate_python_cmd(
+                    student_model, dataset, run,
+                    distillation=method, teacher_model=teacher_model,
+                    teacher_weights=teacher_weights, alpha=0.5, temperature=4.0
+                )
+                generate_pbs_script(python_cmd, experiment_name)
 
 print('All experiments are finished / queued')
-
-
-# ============================================================================
-# TEST COMMANDS - Run these manually to verify everything works
-# ============================================================================
-# 
-# DIRECTORY STRUCTURE (everything in experiments/):
-#   experiments/
-#   └── Cifar10/
-#       ├── pure/
-#       │   └── ResNet56/
-#       │       └── 0/
-#       │           ├── best.pth        # Best model weights (for inference/teacher)
-#       │           ├── checkpoint.pth  # Full training state (for resume)
-#       │           ├── status.json     # Training status
-#       │           ├── metrics.json    # Training metrics
-#       │           ├── Loss.png        # Loss plot
-#       │           └── Accuracy.png    # Accuracy plot
-#       └── logit/
-#           └── ResNet56_to_ResNetBaby/
-#               └── 0/
-#                   └── ...
-#
-# RESUMPTION BEHAVIOR:
-#   - If status.json says "completed", training exits immediately
-#   - If checkpoint.pth exists, training resumes from last epoch
-#   - Use --force_restart to ignore checkpoints and train from scratch
-#
-# Quick test commands:
-# 
-# 1. PURE TRAINING - Train a teacher model (ResNet56):
-#    python train.py --model ResNet56 --dataset Cifar10 --seed 0
-#
-# 2. RESUME INTERRUPTED TRAINING (automatic if checkpoint exists):
-#    python train.py --model ResNet56 --dataset Cifar10 --seed 0
-#    (Will automatically resume from where it left off)
-#
-# 3. FORCE RESTART (ignore existing checkpoint):
-#    python train.py --model ResNet56 --dataset Cifar10 --seed 0 --force_restart
-#
-# 4. LOGIT DISTILLATION - ResNet56 teacher -> ResNetBaby student:
-#    python train.py --model ResNetBaby --dataset Cifar10 --seed 0 \
-#        --distillation logit --teacher_model ResNet56 \
-#        --teacher_weights experiments/Cifar10/pure/ResNet56/0/best.pth \
-#        --alpha 0.5 --temperature 4.0
-#
-# 5. FACTOR TRANSFER - ResNet56 teacher -> ResNetBaby student:
-#    python train.py --model ResNetBaby --dataset Cifar10 --seed 0 \
-#        --distillation factor_transfer --teacher_model ResNet56 \
-#        --teacher_weights experiments/Cifar10/pure/ResNet56/0/best.pth \
-#        --alpha 0.5
-#
-# ============================================================================

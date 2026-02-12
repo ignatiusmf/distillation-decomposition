@@ -1,0 +1,518 @@
+Wed Feb 11 20:20:08 SAST 2026
+Running python train.py --model ResNet112 --dataset Cifar10 --seed 1
+
+{'model': 'ResNet112', 'dataset': 'Cifar10', 'seed': 1, 'distillation': 'none', 'teacher_model': None, 'teacher_weights': None, 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=1
+Files already downloaded and verified
+Files already downloaded and verified
+Epoch 0
+TRAIN | Loss: 2.352 | Acc: 12.90 |
+TEST | Loss: 2.079 | Acc: 20.330 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 1
+TRAIN | Loss: 2.065 | Acc: 24.15 |
+TEST | Loss: 1.851 | Acc: 32.190 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 2
+TRAIN | Loss: 1.953 | Acc: 30.70 |
+TEST | Loss: 1.751 | Acc: 35.620 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 3
+TRAIN | Loss: 1.862 | Acc: 35.75 |
+TEST | Loss: 1.654 | Acc: 39.130 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 4
+TRAIN | Loss: 1.779 | Acc: 40.68 |
+TEST | Loss: 1.506 | Acc: 44.150 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 5
+TRAIN | Loss: 1.670 | Acc: 46.17 |
+TEST | Loss: 1.267 | Acc: 55.520 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 6
+TRAIN | Loss: 1.583 | Acc: 50.53 |
+TEST | Loss: 1.204 | Acc: 58.360 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 7
+TRAIN | Loss: 1.492 | Acc: 55.20 |
+TEST | Loss: 1.118 | Acc: 62.310 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 8
+TRAIN | Loss: 1.446 | Acc: 57.62 |
+TEST | Loss: 1.133 | Acc: 60.060 |
+Epoch 9
+TRAIN | Loss: 1.409 | Acc: 59.41 |
+TEST | Loss: 1.152 | Acc: 60.380 |
+Epoch 10
+TRAIN | Loss: 1.372 | Acc: 61.42 |
+TEST | Loss: 1.014 | Acc: 65.600 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 11
+TRAIN | Loss: 1.350 | Acc: 62.44 |
+TEST | Loss: 1.089 | Acc: 62.720 |
+Epoch 12
+TRAIN | Loss: 1.325 | Acc: 63.40 |
+TEST | Loss: 0.884 | Acc: 71.140 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 13
+TRAIN | Loss: 1.315 | Acc: 64.09 |
+TEST | Loss: 0.911 | Acc: 68.940 |
+Epoch 14
+TRAIN | Loss: 1.296 | Acc: 64.85 |
+TEST | Loss: 0.871 | Acc: 70.990 |
+Epoch 15
+TRAIN | Loss: 1.281 | Acc: 65.70 |
+TEST | Loss: 0.857 | Acc: 71.620 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 16
+TRAIN | Loss: 1.273 | Acc: 65.83 |
+TEST | Loss: 0.829 | Acc: 72.670 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 17
+TRAIN | Loss: 1.258 | Acc: 66.75 |
+TEST | Loss: 0.863 | Acc: 72.870 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 18
+TRAIN | Loss: 1.241 | Acc: 67.31 |
+TEST | Loss: 0.850 | Acc: 72.990 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 19
+TRAIN | Loss: 1.234 | Acc: 67.83 |
+TEST | Loss: 0.858 | Acc: 71.490 |
+Epoch 20
+TRAIN | Loss: 1.237 | Acc: 67.60 |
+TEST | Loss: 0.773 | Acc: 75.560 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 21
+TRAIN | Loss: 1.227 | Acc: 68.17 |
+TEST | Loss: 0.710 | Acc: 77.220 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 22
+TRAIN | Loss: 1.223 | Acc: 68.17 |
+TEST | Loss: 0.799 | Acc: 73.690 |
+Epoch 23
+TRAIN | Loss: 1.209 | Acc: 68.82 |
+TEST | Loss: 0.688 | Acc: 79.110 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 24
+TRAIN | Loss: 1.207 | Acc: 69.08 |
+TEST | Loss: 0.732 | Acc: 76.660 |
+Epoch 25
+TRAIN | Loss: 1.202 | Acc: 69.34 |
+TEST | Loss: 0.788 | Acc: 74.290 |
+Epoch 26
+TRAIN | Loss: 1.190 | Acc: 69.94 |
+TEST | Loss: 0.886 | Acc: 71.090 |
+Epoch 27
+TRAIN | Loss: 1.197 | Acc: 69.06 |
+TEST | Loss: 0.721 | Acc: 77.140 |
+Epoch 28
+TRAIN | Loss: 1.186 | Acc: 69.83 |
+TEST | Loss: 0.690 | Acc: 78.480 |
+Epoch 29
+TRAIN | Loss: 1.191 | Acc: 69.54 |
+TEST | Loss: 0.866 | Acc: 71.220 |
+Epoch 30
+TRAIN | Loss: 1.185 | Acc: 69.68 |
+TEST | Loss: 0.769 | Acc: 75.000 |
+Epoch 31
+TRAIN | Loss: 1.182 | Acc: 70.15 |
+TEST | Loss: 0.822 | Acc: 74.540 |
+Epoch 32
+TRAIN | Loss: 1.174 | Acc: 70.33 |
+TEST | Loss: 0.725 | Acc: 77.630 |
+Epoch 33
+TRAIN | Loss: 1.167 | Acc: 70.59 |
+TEST | Loss: 0.664 | Acc: 78.790 |
+Epoch 34
+TRAIN | Loss: 1.168 | Acc: 70.62 |
+TEST | Loss: 0.690 | Acc: 78.130 |
+Epoch 35
+TRAIN | Loss: 1.163 | Acc: 71.02 |
+TEST | Loss: 0.640 | Acc: 79.590 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 36
+TRAIN | Loss: 1.159 | Acc: 71.08 |
+TEST | Loss: 0.651 | Acc: 79.900 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 37
+TRAIN | Loss: 1.156 | Acc: 71.30 |
+TEST | Loss: 0.626 | Acc: 81.340 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 38
+TRAIN | Loss: 1.149 | Acc: 71.45 |
+TEST | Loss: 0.722 | Acc: 77.340 |
+Epoch 39
+TRAIN | Loss: 1.151 | Acc: 71.41 |
+TEST | Loss: 0.660 | Acc: 78.550 |
+Epoch 40
+TRAIN | Loss: 1.146 | Acc: 71.61 |
+TEST | Loss: 0.664 | Acc: 78.940 |
+Epoch 41
+TRAIN | Loss: 1.141 | Acc: 71.84 |
+TEST | Loss: 0.625 | Acc: 80.510 |
+Epoch 42
+TRAIN | Loss: 1.146 | Acc: 71.68 |
+TEST | Loss: 0.743 | Acc: 76.940 |
+Epoch 43
+TRAIN | Loss: 1.141 | Acc: 71.87 |
+TEST | Loss: 0.711 | Acc: 78.180 |
+Epoch 44
+TRAIN | Loss: 1.134 | Acc: 72.22 |
+TEST | Loss: 0.686 | Acc: 78.400 |
+Epoch 45
+TRAIN | Loss: 1.135 | Acc: 72.16 |
+TEST | Loss: 0.660 | Acc: 79.060 |
+Epoch 46
+TRAIN | Loss: 1.135 | Acc: 72.21 |
+TEST | Loss: 0.673 | Acc: 79.480 |
+Epoch 47
+TRAIN | Loss: 1.133 | Acc: 72.22 |
+TEST | Loss: 0.640 | Acc: 80.340 |
+Epoch 48
+TRAIN | Loss: 1.128 | Acc: 72.51 |
+TEST | Loss: 0.675 | Acc: 78.600 |
+Epoch 49
+TRAIN | Loss: 1.123 | Acc: 72.55 |
+TEST | Loss: 0.653 | Acc: 79.670 |
+Epoch 50
+TRAIN | Loss: 1.110 | Acc: 73.15 |
+TEST | Loss: 0.685 | Acc: 78.340 |
+Epoch 51
+TRAIN | Loss: 1.123 | Acc: 72.54 |
+TEST | Loss: 0.609 | Acc: 81.910 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 52
+TRAIN | Loss: 1.115 | Acc: 72.94 |
+TEST | Loss: 0.687 | Acc: 78.700 |
+Epoch 53
+TRAIN | Loss: 1.110 | Acc: 73.24 |
+TEST | Loss: 0.684 | Acc: 77.690 |
+Epoch 54
+TRAIN | Loss: 1.106 | Acc: 73.33 |
+TEST | Loss: 0.656 | Acc: 79.030 |
+Epoch 55
+TRAIN | Loss: 1.109 | Acc: 73.43 |
+TEST | Loss: 0.632 | Acc: 80.060 |
+Epoch 56
+TRAIN | Loss: 1.103 | Acc: 73.60 |
+TEST | Loss: 0.561 | Acc: 83.100 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 57
+TRAIN | Loss: 1.097 | Acc: 73.75 |
+TEST | Loss: 0.617 | Acc: 80.700 |
+Epoch 58
+TRAIN | Loss: 1.096 | Acc: 73.79 |
+TEST | Loss: 0.754 | Acc: 74.830 |
+Epoch 59
+TRAIN | Loss: 1.094 | Acc: 73.71 |
+TEST | Loss: 0.616 | Acc: 80.860 |
+Epoch 60
+TRAIN | Loss: 1.089 | Acc: 74.14 |
+TEST | Loss: 0.611 | Acc: 81.910 |
+Epoch 61
+TRAIN | Loss: 1.093 | Acc: 73.97 |
+TEST | Loss: 0.631 | Acc: 80.610 |
+Epoch 62
+TRAIN | Loss: 1.090 | Acc: 74.03 |
+TEST | Loss: 0.576 | Acc: 82.930 |
+Epoch 63
+TRAIN | Loss: 1.083 | Acc: 74.24 |
+TEST | Loss: 0.562 | Acc: 83.630 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 64
+TRAIN | Loss: 1.077 | Acc: 74.71 |
+TEST | Loss: 0.670 | Acc: 78.820 |
+Epoch 65
+TRAIN | Loss: 1.079 | Acc: 74.69 |
+TEST | Loss: 0.535 | Acc: 83.680 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 66
+TRAIN | Loss: 1.084 | Acc: 74.40 |
+TEST | Loss: 0.566 | Acc: 82.410 |
+Epoch 67
+TRAIN | Loss: 1.074 | Acc: 74.95 |
+TEST | Loss: 0.566 | Acc: 82.550 |
+Epoch 68
+TRAIN | Loss: 1.071 | Acc: 74.99 |
+TEST | Loss: 0.552 | Acc: 82.670 |
+Epoch 69
+TRAIN | Loss: 1.065 | Acc: 75.27 |
+TEST | Loss: 0.525 | Acc: 83.790 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 70
+TRAIN | Loss: 1.066 | Acc: 75.28 |
+TEST | Loss: 0.533 | Acc: 83.630 |
+Epoch 71
+TRAIN | Loss: 1.062 | Acc: 75.46 |
+TEST | Loss: 0.507 | Acc: 85.060 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 72
+TRAIN | Loss: 1.058 | Acc: 75.51 |
+TEST | Loss: 0.521 | Acc: 83.760 |
+Epoch 73
+TRAIN | Loss: 1.052 | Acc: 75.74 |
+TEST | Loss: 0.534 | Acc: 83.820 |
+Epoch 74
+TRAIN | Loss: 1.053 | Acc: 75.57 |
+TEST | Loss: 0.577 | Acc: 82.490 |
+Epoch 75
+TRAIN | Loss: 1.048 | Acc: 75.95 |
+TEST | Loss: 0.522 | Acc: 84.220 |
+Epoch 76
+TRAIN | Loss: 1.044 | Acc: 76.21 |
+TEST | Loss: 0.594 | Acc: 81.950 |
+Epoch 77
+TRAIN | Loss: 1.036 | Acc: 76.47 |
+TEST | Loss: 0.511 | Acc: 84.410 |
+Epoch 78
+TRAIN | Loss: 1.034 | Acc: 76.61 |
+TEST | Loss: 0.511 | Acc: 85.290 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 79
+TRAIN | Loss: 1.030 | Acc: 76.60 |
+TEST | Loss: 0.484 | Acc: 85.630 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 80
+TRAIN | Loss: 1.032 | Acc: 76.37 |
+TEST | Loss: 0.465 | Acc: 86.200 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 81
+TRAIN | Loss: 1.025 | Acc: 77.02 |
+TEST | Loss: 0.494 | Acc: 85.110 |
+Epoch 82
+TRAIN | Loss: 1.029 | Acc: 76.72 |
+TEST | Loss: 0.545 | Acc: 84.370 |
+Epoch 83
+TRAIN | Loss: 1.019 | Acc: 77.43 |
+TEST | Loss: 0.476 | Acc: 86.350 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 84
+TRAIN | Loss: 1.017 | Acc: 77.41 |
+TEST | Loss: 0.534 | Acc: 83.570 |
+Epoch 85
+TRAIN | Loss: 1.009 | Acc: 77.63 |
+TEST | Loss: 0.570 | Acc: 82.540 |
+Epoch 86
+TRAIN | Loss: 1.011 | Acc: 77.83 |
+TEST | Loss: 0.472 | Acc: 86.000 |
+Epoch 87
+TRAIN | Loss: 1.004 | Acc: 77.83 |
+TEST | Loss: 0.529 | Acc: 83.970 |
+Epoch 88
+TRAIN | Loss: 0.997 | Acc: 78.22 |
+TEST | Loss: 0.497 | Acc: 85.780 |
+Epoch 89
+TRAIN | Loss: 1.000 | Acc: 78.09 |
+TEST | Loss: 0.468 | Acc: 86.100 |
+Epoch 90
+TRAIN | Loss: 0.988 | Acc: 78.71 |
+TEST | Loss: 0.447 | Acc: 86.360 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 91
+TRAIN | Loss: 0.987 | Acc: 78.80 |
+TEST | Loss: 0.484 | Acc: 85.380 |
+Epoch 92
+TRAIN | Loss: 0.983 | Acc: 78.99 |
+TEST | Loss: 0.426 | Acc: 87.770 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 93
+TRAIN | Loss: 0.981 | Acc: 78.92 |
+TEST | Loss: 0.441 | Acc: 87.140 |
+Epoch 94
+TRAIN | Loss: 0.974 | Acc: 79.27 |
+TEST | Loss: 0.467 | Acc: 86.370 |
+Epoch 95
+TRAIN | Loss: 0.971 | Acc: 79.38 |
+TEST | Loss: 0.474 | Acc: 86.290 |
+Epoch 96
+TRAIN | Loss: 0.969 | Acc: 79.60 |
+TEST | Loss: 0.424 | Acc: 87.900 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 97
+TRAIN | Loss: 0.964 | Acc: 79.74 |
+TEST | Loss: 0.538 | Acc: 83.560 |
+Epoch 98
+TRAIN | Loss: 0.953 | Acc: 80.18 |
+TEST | Loss: 0.439 | Acc: 87.400 |
+Epoch 99
+TRAIN | Loss: 0.961 | Acc: 79.94 |
+TEST | Loss: 0.435 | Acc: 87.550 |
+Epoch 100
+TRAIN | Loss: 0.954 | Acc: 79.99 |
+TEST | Loss: 0.438 | Acc: 88.250 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 101
+TRAIN | Loss: 0.944 | Acc: 80.65 |
+TEST | Loss: 0.447 | Acc: 87.460 |
+Epoch 102
+TRAIN | Loss: 0.939 | Acc: 80.77 |
+TEST | Loss: 0.452 | Acc: 86.930 |
+Epoch 103
+TRAIN | Loss: 0.936 | Acc: 80.86 |
+TEST | Loss: 0.414 | Acc: 88.680 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 104
+TRAIN | Loss: 0.934 | Acc: 80.99 |
+TEST | Loss: 0.418 | Acc: 87.680 |
+Epoch 105
+TRAIN | Loss: 0.929 | Acc: 81.34 |
+TEST | Loss: 0.413 | Acc: 88.580 |
+Epoch 106
+TRAIN | Loss: 0.921 | Acc: 81.61 |
+TEST | Loss: 0.383 | Acc: 88.850 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 107
+TRAIN | Loss: 0.917 | Acc: 81.73 |
+TEST | Loss: 0.428 | Acc: 87.560 |
+Epoch 108
+TRAIN | Loss: 0.912 | Acc: 82.13 |
+TEST | Loss: 0.366 | Acc: 90.210 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 109
+TRAIN | Loss: 0.907 | Acc: 82.16 |
+TEST | Loss: 0.377 | Acc: 90.070 |
+Epoch 110
+TRAIN | Loss: 0.901 | Acc: 82.44 |
+TEST | Loss: 0.357 | Acc: 90.320 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 111
+TRAIN | Loss: 0.893 | Acc: 82.87 |
+TEST | Loss: 0.348 | Acc: 90.360 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 112
+TRAIN | Loss: 0.893 | Acc: 82.75 |
+TEST | Loss: 0.358 | Acc: 90.730 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 113
+TRAIN | Loss: 0.887 | Acc: 83.12 |
+TEST | Loss: 0.369 | Acc: 89.810 |
+Epoch 114
+TRAIN | Loss: 0.874 | Acc: 83.76 |
+TEST | Loss: 0.376 | Acc: 89.740 |
+Epoch 115
+TRAIN | Loss: 0.870 | Acc: 83.94 |
+TEST | Loss: 0.343 | Acc: 90.860 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 116
+TRAIN | Loss: 0.869 | Acc: 83.94 |
+TEST | Loss: 0.329 | Acc: 90.850 |
+Epoch 117
+TRAIN | Loss: 0.870 | Acc: 83.88 |
+TEST | Loss: 0.330 | Acc: 91.200 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 118
+TRAIN | Loss: 0.855 | Acc: 84.47 |
+TEST | Loss: 0.350 | Acc: 90.450 |
+Epoch 119
+TRAIN | Loss: 0.852 | Acc: 84.70 |
+TEST | Loss: 0.320 | Acc: 91.430 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 120
+TRAIN | Loss: 0.846 | Acc: 85.04 |
+TEST | Loss: 0.334 | Acc: 91.070 |
+Epoch 121
+TRAIN | Loss: 0.838 | Acc: 85.35 |
+TEST | Loss: 0.338 | Acc: 90.770 |
+Epoch 122
+TRAIN | Loss: 0.837 | Acc: 85.34 |
+TEST | Loss: 0.318 | Acc: 91.800 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 123
+TRAIN | Loss: 0.828 | Acc: 85.73 |
+TEST | Loss: 0.322 | Acc: 91.330 |
+Epoch 124
+TRAIN | Loss: 0.820 | Acc: 86.19 |
+TEST | Loss: 0.324 | Acc: 91.410 |
+Epoch 125
+TRAIN | Loss: 0.822 | Acc: 85.87 |
+TEST | Loss: 0.302 | Acc: 92.380 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 126
+TRAIN | Loss: 0.809 | Acc: 86.49 |
+TEST | Loss: 0.300 | Acc: 92.460 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 127
+TRAIN | Loss: 0.810 | Acc: 86.47 |
+TEST | Loss: 0.295 | Acc: 92.620 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 128
+TRAIN | Loss: 0.797 | Acc: 87.13 |
+TEST | Loss: 0.296 | Acc: 92.290 |
+Epoch 129
+TRAIN | Loss: 0.795 | Acc: 87.15 |
+TEST | Loss: 0.303 | Acc: 92.430 |
+Epoch 130
+TRAIN | Loss: 0.790 | Acc: 87.42 |
+TEST | Loss: 0.278 | Acc: 92.870 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 131
+TRAIN | Loss: 0.778 | Acc: 87.98 |
+TEST | Loss: 0.286 | Acc: 92.770 |
+Epoch 132
+TRAIN | Loss: 0.773 | Acc: 88.24 |
+TEST | Loss: 0.280 | Acc: 93.290 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 133
+TRAIN | Loss: 0.767 | Acc: 88.40 |
+TEST | Loss: 0.276 | Acc: 93.180 |
+Epoch 134
+TRAIN | Loss: 0.770 | Acc: 88.17 |
+TEST | Loss: 0.273 | Acc: 93.220 |
+Epoch 135
+TRAIN | Loss: 0.760 | Acc: 88.89 |
+TEST | Loss: 0.265 | Acc: 93.550 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 136
+TRAIN | Loss: 0.752 | Acc: 89.09 |
+TEST | Loss: 0.265 | Acc: 93.710 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 137
+TRAIN | Loss: 0.750 | Acc: 89.13 |
+TEST | Loss: 0.260 | Acc: 93.900 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 138
+TRAIN | Loss: 0.745 | Acc: 89.37 |
+TEST | Loss: 0.261 | Acc: 93.650 |
+Epoch 139
+TRAIN | Loss: 0.740 | Acc: 89.63 |
+TEST | Loss: 0.264 | Acc: 93.590 |
+Epoch 140
+TRAIN | Loss: 0.737 | Acc: 89.67 |
+TEST | Loss: 0.254 | Acc: 93.930 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 141
+TRAIN | Loss: 0.736 | Acc: 89.91 |
+TEST | Loss: 0.256 | Acc: 93.910 |
+Epoch 142
+TRAIN | Loss: 0.730 | Acc: 90.07 |
+TEST | Loss: 0.252 | Acc: 93.970 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 143
+TRAIN | Loss: 0.727 | Acc: 90.29 |
+TEST | Loss: 0.256 | Acc: 94.090 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 144
+TRAIN | Loss: 0.728 | Acc: 90.22 |
+TEST | Loss: 0.251 | Acc: 94.110 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 145
+TRAIN | Loss: 0.725 | Acc: 90.26 |
+TEST | Loss: 0.253 | Acc: 94.040 |
+Epoch 146
+TRAIN | Loss: 0.726 | Acc: 90.29 |
+TEST | Loss: 0.250 | Acc: 94.210 |
+Saved best model to experiments/Cifar10/pure/ResNet112/1/best.pth
+Epoch 147
+TRAIN | Loss: 0.721 | Acc: 90.56 |
+TEST | Loss: 0.249 | Acc: 94.160 |
+Epoch 148
+TRAIN | Loss: 0.721 | Acc: 90.42 |
+TEST | Loss: 0.250 | Acc: 94.150 |
+Epoch 149
+TRAIN | Loss: 0.720 | Acc: 90.43 |
+TEST | Loss: 0.248 | Acc: 94.120 |
+
+Training completed! Best accuracy: 94.21%
+Best model saved to: experiments/Cifar10/pure/ResNet112/1/best.pth
+
+Total execution time: 4847 seconds
