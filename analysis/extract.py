@@ -5,7 +5,7 @@ Run this once to save representations to .npz files.
 The analysis script only needs those files (no GPU required).
 
 Usage:
-    python analysis/extract.py [--device cpu|cuda] [--seed 0]
+    python analysis/extract.py [--device cpu|cuda] [--dataset all|Cifar10|Cifar100]
 """
 import sys
 from pathlib import Path
@@ -17,7 +17,33 @@ import numpy as np
 import argparse
 
 from toolbox.models import ResNet112, ResNet56
-from toolbox.data_loader import Cifar100
+from toolbox.data_loader import Cifar10, Cifar100
+
+DATASETS = {
+    'Cifar10':  {'loader': Cifar10,  'class_num': 10},
+    'Cifar100': {'loader': Cifar100, 'class_num': 100},
+}
+
+SEEDS = [0, 1, 2]
+
+MODEL_CONFIGS = {
+    'teacher_ResNet112': {
+        'arch': ResNet112,
+        'path_template': 'experiments/{dataset}/pure/ResNet112/{seed}/best.pth',
+    },
+    'student_ResNet56_pure': {
+        'arch': ResNet56,
+        'path_template': 'experiments/{dataset}/pure/ResNet56/{seed}/best.pth',
+    },
+    'student_ResNet56_logit': {
+        'arch': ResNet56,
+        'path_template': 'experiments/{dataset}/logit/ResNet112_to_ResNet56/{seed}/best.pth',
+    },
+    'student_ResNet56_factor': {
+        'arch': ResNet56,
+        'path_template': 'experiments/{dataset}/factor_transfer/ResNet112_to_ResNet56/{seed}/best.pth',
+    },
+}
 
 
 def extract(model, dataloader, device):
@@ -45,56 +71,45 @@ def extract(model, dataloader, device):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
-    parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--dataset', default='all', choices=['Cifar10', 'Cifar100', 'all'])
     parser.add_argument('--batch-size', type=int, default=128)
     args = parser.parse_args()
 
-    dataset = 'Cifar100'
-    seed = args.seed
-    device = args.device
+    datasets = list(DATASETS.keys()) if args.dataset == 'all' else [args.dataset]
 
-    configs = {
-        'teacher_ResNet112': (
-            ResNet112,
-            f'experiments/{dataset}/pure/ResNet112/{seed}/best.pth',
-        ),
-        'student_ResNet56_logit': (
-            ResNet56,
-            f'experiments/{dataset}/logit/ResNet112_to_ResNet56/{seed}/best.pth',
-        ),
-        'student_ResNet56_factor': (
-            ResNet56,
-            f'experiments/{dataset}/factor_transfer/ResNet112_to_ResNet56/{seed}/best.pth',
-        ),
-    }
+    for dataset_name in datasets:
+        ds_info = DATASETS[dataset_name]
+        print(f"\n{'='*60}")
+        print(f"Dataset: {dataset_name}")
+        print(f"{'='*60}")
 
-    print(f"Device: {device} | Seed: {seed}")
-    data = Cifar100(args.batch_size, seed=seed)
+        out_dir = Path(f'analysis/representations/{dataset_name}')
+        out_dir.mkdir(parents=True, exist_ok=True)
 
-    out_dir = Path('analysis/representations')
-    out_dir.mkdir(parents=True, exist_ok=True)
+        for seed in SEEDS:
+            print(f"\n--- Seed {seed} ---")
+            data = ds_info['loader'](args.batch_size, seed=seed)
 
-    for name, (arch, weights_path) in configs.items():
-        print(f"\n--- {name} ---")
-        if not Path(weights_path).exists():
-            print(f"  Weights not found: {weights_path}")
-            continue
+            for name, cfg in MODEL_CONFIGS.items():
+                weights_path = cfg['path_template'].format(dataset=dataset_name, seed=seed)
+                if not Path(weights_path).exists():
+                    print(f"  [{name}] Weights not found: {weights_path}")
+                    continue
 
-        model = arch(data.class_num).to(device)
-        ckpt = torch.load(weights_path, map_location=device, weights_only=True)
-        model.load_state_dict(ckpt['weights'])
-        print(f"  Loaded {weights_path}")
+                model = cfg['arch'](data.class_num).to(args.device)
+                ckpt = torch.load(weights_path, map_location=args.device, weights_only=True)
+                model.load_state_dict(ckpt['weights'])
 
-        reps = extract(model, data.testloader, device)
-        save_path = out_dir / f'{name}_seed{seed}.npz'
-        np.savez(save_path, **reps)
-        print(f"  Saved {save_path}")
-        for k, v in reps.items():
-            print(f"    {k}: {v.shape}")
+                reps = extract(model, data.testloader, args.device)
+                save_path = out_dir / f'{name}_seed{seed}.npz'
+                np.savez(save_path, **reps)
 
-        del model
-        if device == 'cuda':
-            torch.cuda.empty_cache()
+                acc = (np.argmax(reps['logits'], axis=1) == reps['labels']).mean() * 100
+                print(f"  [{name}] acc={acc:.2f}%  saved -> {save_path}")
+
+                del model
+                if args.device == 'cuda':
+                    torch.cuda.empty_cache()
 
 
 if __name__ == '__main__':
