@@ -28,6 +28,7 @@ pure:
   Cifar100/pure/ResNet112/0                               | completed  | 71.59
   Cifar100/pure/ResNet112/1                               | completed  | 72.88
   Cifar100/pure/ResNet112/2                               | completed  | 72.43
+  
   Cifar100/pure/ResNet56/0                                | completed  | 70.43
   Cifar100/pure/ResNet56/1                                | completed  | 71.54
   Cifar100/pure/ResNet56/2                                | completed  | 71.54
