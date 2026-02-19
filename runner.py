@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import numpy as np
 
-testing = os.name != 'posix'
+testing = os.name != 'posix' or not os.path.isfile('/usr/bin/qsub')
 
 limit = 10 if testing else 10 - int(
     subprocess.run(
@@ -42,7 +42,7 @@ def is_training_complete(dataset, method, model_name, seed, teacher_model=None):
         status_path = Path(f'experiments/{dataset}/pure/{model_name}/{seed}/status.json')
     else:
         status_path = Path(f'experiments/{dataset}/{method}/{teacher_model}_to_{model_name}/{seed}/status.json')
-    
+
     if status_path.exists():
         with open(status_path, 'r') as f:
             status = json.load(f)
@@ -56,23 +56,23 @@ def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model
     Returns True if we should skip (already completed), False if we should run.
     """
     global total, limit
-    if total == limit: 
+    if total == limit:
         print('Queue limit reached, exiting')
         exit()
 
     # Check the status.json in the experiment directory
-    if is_training_complete(dataset, 'pure' if distillation == 'none' else distillation, 
+    if is_training_complete(dataset, 'pure' if distillation == 'none' else distillation,
                             model, seed, teacher_model):
         return True
 
     total += 1
     return False
 
-def generate_python_cmd(model, dataset, seed, distillation='none', 
+def generate_python_cmd(model, dataset, seed, distillation='none',
                         teacher_model=None, teacher_weights=None, alpha=0.5, temperature=4.0):
     """Generate the python command for training."""
     cmd = f"python train.py --model {model} --dataset {dataset} --seed {seed}"
-    
+
     if distillation != 'none':
         cmd += f" --distillation {distillation}"
         cmd += f" --teacher_model {teacher_model}"
@@ -80,7 +80,7 @@ def generate_python_cmd(model, dataset, seed, distillation='none',
         cmd += f" --alpha {alpha}"
         if distillation == 'logit':
             cmd += f" --temperature {temperature}"
-    
+
     print(cmd)
     return cmd
 
@@ -105,10 +105,11 @@ def get_experiment_name(dataset, model, seed, distillation='none', teacher_model
 # The check_path_and_skip mechanism ensures completed runs are skipped.
 # ============================================================================
 
-runs = 3
-datasets = ['Cifar100', 'Cifar10']
+runs = 1
+datasets = ['Cifar100', 'Cifar10', 'SVHN', 'TinyImageNet']
 teacher_model = 'ResNet112'
 student_models = ['ResNet56']
+distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
 
 for dataset in datasets:
     # --- Pure training (teacher + student baselines) ---
@@ -119,9 +120,9 @@ for dataset in datasets:
             python_cmd = generate_python_cmd(model, dataset, run)
             generate_pbs_script(python_cmd, experiment_name)
 
-    # --- Distillation: teacher -> each student, both methods ---
+    # --- Distillation: teacher -> each student, all methods ---
     for student_model in student_models:
-        for method in ['logit', 'factor_transfer']:
+        for method in distillation_methods:
             for run in range(runs):
                 if check_path_and_skip(student_model, dataset, run,
                                        distillation=method, teacher_model=teacher_model): continue
