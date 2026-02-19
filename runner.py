@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import numpy as np
 
-testing = os.name != 'posix' or not os.path.isfile('/usr/bin/qsub')
+testing = os.name != 'posix'
 
 limit = 10 if testing else 10 - int(
     subprocess.run(
