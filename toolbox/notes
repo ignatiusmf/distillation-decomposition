@@ -1,0 +1,11 @@
+module load chpc/python/anaconda/3-2024.10.1
+module load gcc/9.2.0
+
+source /home/iferreira/myenv/bin/activate
+
+# local to hpc
+rsync -avz --delete --exclude='analysis' --exclude='.git' --exclude='.venv' --exclude='experiments/' /home/ignatius/Lab/studies/repos/distillation-decomposition/ iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/
+
+# hpc to local
+rsync -avz --delete --include='experiments/***' --exclude='*' iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/ /home/ignatius/Lab/studies/repos/distillation-decomposition/
+
