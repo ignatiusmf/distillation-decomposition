@@ -60,7 +60,7 @@ def get_loaders(dataset: str, batch_size: int, data_root: str = "./data", seed =
         testset = ds(root=data_root, split='test', download=True, transform=transform_test)
     else:  # Tiny‑ImageNet via ImageFolder
         train_dir = os.path.join(data_root, "tiny-imagenet-200", "train")
-        val_dir   = os.path.join(data_root, "tiny-imagenet-200", "val", "images")
+        val_dir   = os.path.join(data_root, "tiny-imagenet-200", "val", "images_by_class")
         trainset = ImageFolder(train_dir, transform=transform_train)
         testset  = ImageFolder(val_dir,   transform=transform_test)
 

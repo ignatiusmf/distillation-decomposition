@@ -4,7 +4,7 @@ module load gcc/9.2.0
 source /home/iferreira/myenv/bin/activate
 
 # local to hpc
-rsync -avz --delete --exclude='data/' --exclude='.venv' --exclude='experiments/' /home/ignatius/Lab/studies/repos/distillation-decomposition/ iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/
+rsync -avz --delete --exclude='.git' --exclude='.venv' --exclude='experiments/' /home/ignatius/Lab/studies/repos/distillation-decomposition/ iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/
 
 # hpc to local
 rsync -avz --delete --include='experiments/***' --exclude='*' iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/ /home/ignatius/Lab/studies/repos/distillation-decomposition/
