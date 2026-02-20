@@ -161,20 +161,19 @@ teacher_model = 'ResNet112'
 student_models = ['ResNet56']
 distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
 
-for dataset in datasets:
-    # --- Pure training (teacher + student baselines) ---
-    for model in [teacher_model] + student_models:
-        for run in range(runs):
+for run in range(runs):
+    for dataset in datasets:
+        # --- Pure training (teacher + student baselines) ---
+        for model in [teacher_model] + student_models:
             if check_path_and_skip(model, dataset, run): continue
             experiment_name = get_experiment_name(dataset, model, run)
             python_cmd = generate_python_cmd(model, dataset, run)
             generate_pbs_script(python_cmd, experiment_name)
 
-    # --- Distillation: teacher -> each student, all methods, all alphas ---
-    for student_model in student_models:
-        for method in distillation_methods:
-            for alpha in alphas:
-                for run in range(runs):
+        # --- Distillation: teacher -> each student, all methods, all alphas ---
+        for student_model in student_models:
+            for method in distillation_methods:
+                for alpha in alphas:
                     # Verify teacher is fully trained before queuing any KD student
                     if not is_training_complete(dataset, 'pure', teacher_model, run):
                         print(f"Teacher {teacher_model} seed {run} not complete for {dataset}, skipping KD")
