@@ -1,7 +1,7 @@
 {
   "status": "in_progress",
-  "epoch": 39,
-  "max_acc": 91.78318992009834,
+  "epoch": 64,
+  "max_acc": 93.18531038721574,
   "config": {
     "model": "ResNet56",
     "dataset": "SVHN",
