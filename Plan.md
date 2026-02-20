@@ -94,6 +94,12 @@ This removes per-epoch Lustre writes from the hot training path. Make changes in
   classic FitNets setup where a thin early student layer is forced to expand to match
   a wider intermediate teacher layer. Change: `hint_layer=0` in distillation.py FitNets.
 
+- **AttentionTransfer implicit spatial weighting** — INVESTIGATED, NO ACTION NEEDED.
+  The concern (larger spatial maps dominating) is neutralised by the L2 normalization inside
+  `_attention_map`: for any two unit vectors, ||a-b||² = 2*(1-cos θ) ∈ [0,4] regardless of
+  spatial size. Layer1 (32×32) and layer3 (8×8) contribute equally bounded values.
+  Minor note: paper sums across layers; code averages (/3) — a constant factor absorbed by alpha.
+
 ---
 
 ## Before Next Experiment Round
