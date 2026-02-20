@@ -1,11 +1,9 @@
-module load chpc/python/anaconda/3-2024.10.1
-module load gcc/9.2.0
+#!/bin/bash
 
-source /home/iferreira/myenv/bin/activate
-
-# local to hpc
+# Push local code changes up to CHPC. Excludes experiments/, analysis/, .git, .venv
+# so only source files are synced — not results or large data.
 rsync -avz --delete --exclude='analysis' --exclude='.git' --exclude='.venv' --exclude='experiments/' /home/ignatius/Lab/studies/repos/distillation-decomposition/ iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/
 
-# hpc to local
+# Pull experiment results back from CHPC. Only syncs experiments/ — nothing else comes down.
 rsync -avz --delete --include='experiments/***' --exclude='*' iferreira@lengau.chpc.ac.za:/home/iferreira/lustre/distillation-decomposition/ /home/ignatius/Lab/studies/repos/distillation-decomposition/
 

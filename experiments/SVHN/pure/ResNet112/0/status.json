@@ -1,0 +1,16 @@
+{
+  "status": "in_progress",
+  "epoch": 46,
+  "max_acc": 93.4081130915796,
+  "config": {
+    "model": "ResNet112",
+    "dataset": "SVHN",
+    "seed": 0,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  }
+}

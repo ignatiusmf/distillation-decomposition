@@ -1,18 +1,18 @@
 #!/bin/bash
-# This can be run on the CHPC to setup a venv
-# Deactivate and remove the venv
+# Run on CHPC to (re)create the Python venv from scratch.
+# Use this when setting up a new environment or after dependency changes.
+
+# Tear down any existing venv
 deactivate
 rm -rf ~/myenv
 
-# Recreate fresh venv
+# Fresh venv
 python -m venv ~/myenv
 source ~/myenv/bin/activate
 
-# Upgrade pip first
 pip install --upgrade pip
 
-# Install with binary-only flag
+# Binary-only install avoids compiling from source on the cluster
 pip install --only-binary=:all: torch torchvision matplotlib numpy
 
-# Test
 python -c "import torch; print(torch.__version__)"
