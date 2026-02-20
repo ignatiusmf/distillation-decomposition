@@ -762,3 +762,13 @@ A script or one-liner that runs `git log --since="1 week ago" --oneline` and
 | 2026-02-21 | [7] | Added alphas=[0.25,0.5,0.75], runs=3, alpha in dir paths for runner.py + train.py | Done |
 | 2026-02-21 | [10] | Created toolbox/chpc_train.sh (on/off/cron), mkdir toolbox/logs/ | Done |
 | 2026-02-21 | Verify | All Python files compile, factory tests pass, path consistency verified, archive confirmed | All checks pass |
+
+---
+
+## Outstanding Tasks
+
+The following Plan.md items are **not yet implemented** and require future work:
+
+- **[8] Add CHPC cluster details to methodology chapter (Ch6)** — Thesis writing task. Document cluster specs, PBS config, training times, reproducibility settings. Can do anytime.
+- **[9] Generate weekly progress summary from git history** — Utility script for supervisor updates. Can do anytime.
+- **[12] Design charlie analysis suite** — Create `analysis/experiment_charlie/extract.py` and `analyze.py` with auto-discovery of experiment dirs, all 9 existing metrics scaled to ~240 models, plus 3 new alpha-sweep analyses (alpha sweep per metric, method x alpha heatmap, accuracy vs alignment scatter). Gates charlie launch — should be done before training starts producing data.
