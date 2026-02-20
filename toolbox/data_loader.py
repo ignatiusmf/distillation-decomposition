@@ -80,6 +80,7 @@ def get_loaders(dataset: str, batch_size: int, data_root: str = "./data", seed =
         shuffle=True,
         num_workers=num_workers,
         pin_memory=True,
+        persistent_workers=num_workers > 0,
         worker_init_fn=seed_worker,
         generator=g
     )
@@ -90,6 +91,7 @@ def get_loaders(dataset: str, batch_size: int, data_root: str = "./data", seed =
         shuffle=False,
         num_workers=num_workers,
         pin_memory=True,
+        persistent_workers=num_workers > 0,
     )
 
     return trainloader, testloader

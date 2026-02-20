@@ -1,6 +1,6 @@
 from toolbox.models import ResNet112, ResNet56, ResNet20, ResNetBaby
 from toolbox.data_loader import Cifar10, Cifar100, SVHN, TinyImageNet
-from toolbox.utils import plot_the_things, evaluate_model
+from toolbox.utils import evaluate_model
 from toolbox.distillation import get_distillation_method, DISTILLATION_METHODS
 
 import torch
@@ -70,7 +70,7 @@ seed = args.seed
 if args.distillation == 'none':
     experiment_dir = Path(f'experiments/{DATASET}/pure/{MODEL}/{seed}')
 else:
-    experiment_dir = Path(f'experiments/{DATASET}/{args.distillation}/{args.teacher_model}_to_{MODEL}/{seed}')
+    experiment_dir = Path(f'experiments/{DATASET}/{args.distillation}/alpha_{args.alpha}/{args.teacher_model}_to_{MODEL}/{seed}')
 experiment_dir.mkdir(parents=True, exist_ok=True)
 
 # Checkpoint paths (all in experiment_dir)
@@ -132,6 +132,53 @@ distillation = get_distillation_method(
     temperature=args.temperature
 ).to(DEVICE)
 
+# FactorTransfer two-stage training (Kim et al., 2018):
+# Stage 1: pre-train paraphrasers as autoencoders on frozen teacher features
+# Stage 2: freeze paraphrasers, train translators + student jointly
+if args.distillation == 'factor_transfer':
+    from toolbox.distillation import FactorTransfer
+    paraphraser_path = experiment_dir / 'paraphraser.pth'
+
+    if paraphraser_path.exists():
+        # Load pre-trained paraphrasers
+        print(f"Loading pre-trained paraphrasers from {paraphraser_path}")
+        distillation.paraphrasers.load_state_dict(
+            torch.load(paraphraser_path, map_location=DEVICE, weights_only=True)
+        )
+    else:
+        # Run paraphraser pre-training (stage 1)
+        print(f"=== FactorTransfer Stage 1: Pre-training paraphrasers ({FactorTransfer.PRETRAIN_EPOCHS} epochs) ===")
+        pretrain_params = []
+        for module in distillation.get_pretrain_modules():
+            pretrain_params.extend(module.parameters())
+        pretrain_optimizer = optim.Adam(pretrain_params, lr=1e-3)
+        pretrain_scaler = torch.amp.GradScaler('cuda')
+
+        for epoch in range(FactorTransfer.PRETRAIN_EPOCHS):
+            distillation.paraphrasers.train()
+            distillation.decoders.train()
+            epoch_loss = 0.0
+            n_batches = 0
+            for inputs, _ in trainloader:
+                inputs = inputs.to(DEVICE)
+                pretrain_optimizer.zero_grad()
+                with torch.amp.autocast('cuda'):
+                    with torch.no_grad():
+                        teacher_outputs = teacher_model(inputs)
+                    loss = distillation.pretrain_loss(teacher_outputs)
+                pretrain_scaler.scale(loss).backward()
+                pretrain_scaler.step(pretrain_optimizer)
+                pretrain_scaler.update()
+                epoch_loss += loss.item()
+                n_batches += 1
+            print(f"  Pretrain epoch {epoch}: loss={epoch_loss/n_batches:.4f}")
+
+        torch.save(distillation.paraphrasers.state_dict(), paraphraser_path)
+        print(f"Saved paraphrasers to {paraphraser_path}")
+
+    # Freeze paraphrasers for stage 2
+    distillation.freeze_paraphrasers()
+
 # Collect all trainable parameters (student + any distillation modules)
 trainable_params = list(model.parameters())
 for module in distillation.get_trainable_modules():
@@ -139,6 +186,7 @@ for module in distillation.get_trainable_modules():
 
 optimizer = optim.SGD(trainable_params, lr=0.1, momentum=0.9, weight_decay=5e-4)
 scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
+scaler = torch.amp.GradScaler('cuda')
 
 # Initialize training state
 train_loss = []
@@ -156,6 +204,8 @@ if checkpoint_path.exists() and not args.force_restart:
     model.load_state_dict(ckpt['model_state_dict'])
     optimizer.load_state_dict(ckpt['optimizer_state_dict'])
     scheduler.load_state_dict(ckpt['scheduler_state_dict'])
+    if 'scaler_state_dict' in ckpt:
+        scaler.load_state_dict(ckpt['scaler_state_dict'])
     
     # Load distillation module states if present
     if 'distillation_state_dict' in ckpt and ckpt['distillation_state_dict'] is not None:
@@ -184,25 +234,28 @@ for i in range(start_epoch, EPOCHS):
     for batch_idx, (inputs, targets) in enumerate(trainloader):
         inputs, targets = inputs.to(DEVICE), targets.to(DEVICE)
         optimizer.zero_grad()
-        
-        # Forward pass through student
-        outputs = model(inputs)
-        
-        # Cross-entropy loss with label smoothing
-        ce_loss = F.cross_entropy(outputs[-1], targets, label_smoothing=0.1)
-        
-        # Distillation loss
-        if args.distillation != 'none':
-            assert teacher_model is not None
-            with torch.no_grad():
-                teacher_outputs = teacher_model(inputs)
-            distill_loss = distillation.extra_loss(outputs, teacher_outputs, targets)
-            loss = (1 - distillation.alpha) * ce_loss + distillation.alpha * distill_loss
-        else:
-            loss = ce_loss
-        
-        loss.backward()
-        optimizer.step()
+
+        with torch.amp.autocast('cuda'):
+            # Forward pass through student
+            outputs = model(inputs)
+
+            # Cross-entropy loss (label smoothing only for pure training, not KD)
+            smoothing = 0.0 if args.distillation != 'none' else 0.1
+            ce_loss = F.cross_entropy(outputs[-1], targets, label_smoothing=smoothing)
+
+            # Distillation loss
+            if args.distillation != 'none':
+                assert teacher_model is not None
+                with torch.no_grad():
+                    teacher_outputs = teacher_model(inputs)
+                distill_loss = distillation.extra_loss(outputs, teacher_outputs, targets)
+                loss = (1 - distillation.alpha) * ce_loss + distillation.alpha * distill_loss
+            else:
+                loss = ce_loss
+
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
         val_loss += loss.item()
         _, predicted = torch.max(outputs[-1].data, 1)
         total += targets.size(0)
@@ -234,6 +287,7 @@ for i in range(start_epoch, EPOCHS):
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'scheduler_state_dict': scheduler.state_dict(),
+        'scaler_state_dict': scaler.state_dict(),
         'distillation_state_dict': distillation_state,
         'train_loss': train_loss,
         'train_acc': train_acc,
@@ -246,7 +300,6 @@ for i in range(start_epoch, EPOCHS):
     # Update status
     save_status({'status': 'in_progress', 'epoch': i, 'max_acc': max_acc, 'config': vars(args)})
     
-    plot_the_things(train_loss, test_loss, train_acc, test_acc, experiment_dir)
 
 # Mark training as completed
 save_status({'status': 'completed', 'epoch': EPOCHS, 'max_acc': max_acc, 'config': vars(args)})

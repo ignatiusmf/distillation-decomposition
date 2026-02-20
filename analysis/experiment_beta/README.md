@@ -163,15 +163,13 @@ ModuleNotFoundError: No module named 'scipy'
 
 7. **Logit KD seed variance on CIFAR-100** — Seed 0 (69.39%) is 3.77% below seed 2 (73.16%). Seed 0 is worse than pure student; seed 2 exceeds the teacher. Unusual instability.
 
-## Archival Checklist (when all runs are done)
+## Archival Status
 
-- [ ] All CIFAR-10 runs completed (currently: done)
-- [ ] All CIFAR-100 runs completed (currently: done)
-- [ ] All TinyImageNet runs completed (currently: 2 in-progress, 5 not started)
-- [ ] All SVHN runs completed (currently: all failed — need scipy fix)
-- [ ] Fill in final accuracy tables above
-- [ ] Move `experiments/` into `analysis/experiment_beta/experiments/`
-- [ ] Create new blank `experiments/` directory
-- [ ] Copy `extract.py` and `analyze.py` here (or new versions if modified)
-- [ ] Run extraction and analysis
-- [ ] Move representations and figures here
+Experiment beta was **halted** on 2026-02-21. Not all runs completed:
+- CIFAR-10: all completed (3 seeds for pure/logit/factor, seed 0 for AT/FitNets/NST/RKD)
+- CIFAR-100: all completed (same seed structure as CIFAR-10)
+- TinyImageNet: partially complete (teacher in_progress at epoch 127, logit at epoch 58)
+- SVHN: all failed (scipy missing on CHPC)
+
+Experiments archived to `analysis/experiment_beta/experiments/` on 2026-02-21.
+Bug fixes and design improvements were applied before launching experiment charlie.

@@ -107,38 +107,36 @@ class LogitDistillation(DistillationMethod):
 class FactorTransfer(DistillationMethod):
     """
     Factor Transfer (Kim et al., 2018).
-    
-    Transfers knowledge through paraphraser-translator architecture.
-    The paraphraser extracts factors from teacher features, and the 
+
+    Two-stage knowledge transfer:
+      Stage 1: Pre-train paraphrasers as autoencoders on frozen teacher features.
+      Stage 2: Freeze paraphrasers, train translators + student jointly.
+
+    The paraphraser extracts factors from teacher features, and the
     translator learns to match these factors from student features.
     """
-    
+
+    PRETRAIN_EPOCHS = 50
+
     def __init__(
-        self, 
+        self,
         student_channels: List[int],
         teacher_channels: List[int],
         alpha: float = 0.5,
         factor_dim: int = 64,
-        layers_to_use: List[int] = [0, 1, 2]  # Which intermediate layers to use
+        layers_to_use: List[int] = [0, 1, 2]
     ):
-        """
-        Args:
-            student_channels: Channel dimensions for each student layer [16, 32, 64]
-            teacher_channels: Channel dimensions for each teacher layer [16, 32, 64]
-            alpha: Weight for distillation loss
-            factor_dim: Dimension of the factor space
-            layers_to_use: Which layers (0=layer1, 1=layer2, 2=layer3) to transfer
-        """
         super().__init__(alpha)
         self.factor_dim = factor_dim
         self.layers_to_use = layers_to_use
-        
+
         # Create paraphrasers (teacher -> factors) and translators (student -> factors)
         self.paraphrasers = nn.ModuleList()
         self.translators = nn.ModuleList()
-        
+        # Decoders for paraphraser pre-training (factor -> reconstructed teacher features)
+        self.decoders = nn.ModuleList()
+
         for i in layers_to_use:
-            # Paraphraser: teacher features -> factors
             self.paraphrasers.append(
                 nn.Sequential(
                     nn.Conv2d(teacher_channels[i], factor_dim, kernel_size=1, bias=False),
@@ -147,8 +145,7 @@ class FactorTransfer(DistillationMethod):
                     nn.Conv2d(factor_dim, factor_dim, kernel_size=1, bias=False),
                 )
             )
-            
-            # Translator: student features -> factors
+
             self.translators.append(
                 nn.Sequential(
                     nn.Conv2d(student_channels[i], factor_dim, kernel_size=1, bias=False),
@@ -157,46 +154,72 @@ class FactorTransfer(DistillationMethod):
                     nn.Conv2d(factor_dim, factor_dim, kernel_size=1, bias=False),
                 )
             )
-    
+
+            # Decoder mirrors paraphraser: factor_dim -> teacher_channels[i]
+            self.decoders.append(
+                nn.Sequential(
+                    nn.Conv2d(factor_dim, factor_dim, kernel_size=1, bias=False),
+                    nn.BatchNorm2d(factor_dim),
+                    nn.ReLU(inplace=True),
+                    nn.Conv2d(factor_dim, teacher_channels[i], kernel_size=1, bias=False),
+                )
+            )
+
+    def pretrain_loss(self, teacher_outputs: List[torch.Tensor]) -> torch.Tensor:
+        """Autoencoder loss for paraphraser pre-training (stage 1).
+        Encodes teacher features via paraphraser, decodes back, compares with original."""
+        total_loss = 0.0
+        for idx, layer_idx in enumerate(self.layers_to_use):
+            teacher_feat = teacher_outputs[layer_idx]
+            factor = self.paraphrasers[idx](teacher_feat)
+            reconstructed = self.decoders[idx](factor)
+            total_loss = total_loss + F.mse_loss(reconstructed, teacher_feat.detach())
+        return total_loss / len(self.layers_to_use)
+
+    def get_pretrain_modules(self) -> List[nn.Module]:
+        """Return paraphrasers + decoders for stage 1 optimizer."""
+        return [self.paraphrasers, self.decoders]
+
+    def freeze_paraphrasers(self):
+        """Freeze paraphrasers after pre-training (before stage 2)."""
+        for param in self.paraphrasers.parameters():
+            param.requires_grad = False
+
     def extra_loss(
-        self, 
-        student_outputs: List[torch.Tensor], 
+        self,
+        student_outputs: List[torch.Tensor],
         teacher_outputs: List[torch.Tensor],
         targets: torch.Tensor
     ) -> torch.Tensor:
         total_loss = 0.0
-        
+
         for idx, layer_idx in enumerate(self.layers_to_use):
             student_feat = student_outputs[layer_idx]
             teacher_feat = teacher_outputs[layer_idx]
-            
-            # Handle spatial dimension mismatch via adaptive pooling
+
             if student_feat.shape[2:] != teacher_feat.shape[2:]:
                 target_size = (teacher_feat.shape[2], teacher_feat.shape[3])
                 student_feat = F.adaptive_avg_pool2d(student_feat, target_size)
-            
-            # Extract factors
+
             teacher_factor = self.paraphrasers[idx](teacher_feat)
             student_factor = self.translators[idx](student_feat)
-            
-            # Normalize factors (L2 norm along channel dimension)
+
             teacher_factor = F.normalize(teacher_factor, p=2, dim=1)
             student_factor = F.normalize(student_factor, p=2, dim=1)
-            
-            # L2 loss between factors
+
             loss = F.mse_loss(student_factor, teacher_factor.detach())
             total_loss = total_loss + loss
-        
+
         return total_loss / len(self.layers_to_use)  # type: ignore
-    
+
     def get_trainable_modules(self) -> List[nn.Module]:
-        """Return paraphrasers and translators for optimizer."""
-        return [self.paraphrasers, self.translators]
-    
+        """Return translators only for stage 2 optimizer (paraphrasers are frozen)."""
+        return [self.translators]
+
     def to(self, device: str) -> 'FactorTransfer':
-        """Move modules to device."""
         self.paraphrasers = self.paraphrasers.to(device)
         self.translators = self.translators.to(device)
+        self.decoders = self.decoders.to(device)
         return self
 
 
@@ -253,7 +276,9 @@ class FitNets(DistillationMethod):
     FitNets (Romero et al., 2015).
 
     Matches intermediate representations via a learned regressor (connector)
-    that projects the student's feature map to the teacher's dimensionality.
+    that projects the student's guided layer to the teacher's hint layer.
+    Default pairing: student layer1 (16ch) → teacher layer2 (32ch), giving
+    a 16→32 channel expansion that matches the classic FitNets setup.
     """
 
     def __init__(
@@ -261,14 +286,16 @@ class FitNets(DistillationMethod):
         student_channels: List[int],
         teacher_channels: List[int],
         alpha: float = 0.5,
+        guided_layer: int = 0,
         hint_layer: int = 1,
     ):
         super().__init__(alpha)
+        self.guided_layer = guided_layer
         self.hint_layer = hint_layer
 
-        # 1x1 conv to match channel dimensions
+        # 1x1 conv: student guided layer channels → teacher hint layer channels
         self.connector = nn.Conv2d(
-            student_channels[hint_layer],
+            student_channels[guided_layer],
             teacher_channels[hint_layer],
             kernel_size=1, bias=False
         )
@@ -279,7 +306,7 @@ class FitNets(DistillationMethod):
         teacher_outputs: List[torch.Tensor],
         targets: torch.Tensor
     ) -> torch.Tensor:
-        s_feat = student_outputs[self.hint_layer]
+        s_feat = student_outputs[self.guided_layer]
         t_feat = teacher_outputs[self.hint_layer]
 
         s_proj = self.connector(s_feat)
@@ -307,7 +334,7 @@ class RKD(DistillationMethod):
     Uses the GAP'd final feature map (layer3) as the embedding.
     """
 
-    def __init__(self, alpha: float = 0.5, distance_weight: float = 25.0, angle_weight: float = 50.0):
+    def __init__(self, alpha: float = 0.5, distance_weight: float = 1.0, angle_weight: float = 2.0):
         super().__init__(alpha)
         self.distance_weight = distance_weight
         self.angle_weight = angle_weight
@@ -321,7 +348,13 @@ class RKD(DistillationMethod):
         return dist / mean_dist
 
     def _angle(self, e: torch.Tensor) -> torch.Tensor:
-        """Pairwise angle relations (cosine of angle in triplets)."""
+        """Pairwise cosine similarity matrix.
+
+        Note: This is a simplified version of Park et al. 2019's triplet angle
+        formulation. The original computes cosine(e_i - e_j, e_k - e_j) for
+        ordered triplets (O(N^3)). This computes NxN pairwise cosine similarity
+        (O(N^2)), which captures related but not identical relational structure.
+        """
         # e: (B, D)
         e_norm = F.normalize(e, p=2, dim=1)
         return e_norm @ e_norm.t()
@@ -466,14 +499,15 @@ def get_distillation_method(
             student_channels=student_channels,
             teacher_channels=teacher_channels,
             alpha=kwargs.get('alpha', 0.5),
+            guided_layer=kwargs.get('guided_layer', 0),
             hint_layer=kwargs.get('hint_layer', 1),
         )
 
     if method_name == 'rkd':
         return RKD(
             alpha=kwargs.get('alpha', 0.5),
-            distance_weight=kwargs.get('distance_weight', 25.0),
-            angle_weight=kwargs.get('angle_weight', 50.0),
+            distance_weight=kwargs.get('distance_weight', 1.0),
+            angle_weight=kwargs.get('angle_weight', 2.0),
         )
 
     if method_name == 'nst':
