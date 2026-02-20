@@ -128,15 +128,74 @@ Code changes required: runner.py experiment dir structure assumes a flat method 
 train.py, and is_training_complete() accordingly before launching.
 
 **[12] Design charlie analysis suite**
-Using learnings from alpha/, beta/, and research/, design the analysis pipeline that will be
-run on charlie's results. Charlie is the definitive experiment round — the analysis suite
-needs to be fully specified before training starts so that all necessary outputs are captured.
-Read through:
-- research/structure.md and research/kd_explore.md for thesis framing
-- analysis/experiment_alpha/ for the reference analysis implementation
-- analysis/experiment_beta/accuracy_considerations.md for known issues and insights
-Training in charlie produces three gamma levels per method, so the analysis must account for
-alpha as an independent variable (e.g. how does representation geometry shift with alpha?).
+Charlie is the definitive experiment. The analysis pipeline must be fully specified before
+training starts so all necessary outputs are captured.
+
+*Reference implementation:* analysis/experiment_alpha/extract.py + analyze.py.
+These cover 9 metrics across 3 layers for a small set of models (6 per dataset). Charlie
+has ~240 models per dataset — the tooling needs to scale.
+
+### Key new dimension: alpha as an independent variable
+
+Alpha (KD strength) is now a first-class variable alongside method, dataset, and seed.
+The core question: *how does representation geometry shift as KD pressure increases?*
+This requires new analysis functions on top of the existing 9 metrics.
+
+### extract.py changes required
+
+- Iterate over new directory structure: `{method}/{alpha}/{model}/{seed}/`
+- Pure baselines (no alpha): `pure/{model}/{seed}/`
+- Save representations as: `representations/{dataset}/{method}_a{alpha}_s{seed}.npz`
+- GAP-pooled layers (layer1=16ch, layer2=32ch, layer3=64ch) + logits — same format as alpha
+
+### analyze.py changes required
+
+*Carry forward all 9 existing metrics* (they still answer the same representational questions):
+1. PCA variance curves
+2. Effective dimensionality (90%/95%)
+3. CKA same-layer (teacher–student alignment per layer)
+4. CKA cross-layer heatmaps (3×3, reveals depth alignment)
+5. Principal angles (subspace geometry)
+6. ICA correlation heatmaps (independent component matching)
+7. ICA summary (mean matched correlation + count |r|>0.5)
+8. Class separability (Fisher criterion)
+9. PCA scatter (2D, student in teacher's PC basis)
+
+*New analysis functions for the alpha sweep:*
+10. **Alpha sweep per metric** — For each method/dataset/layer, plot metric value vs. alpha
+    (0.25→0.5→0.75). One line per method, shaded ±1σ across seeds. Shows: does stronger KD
+    pressure monotonically increase alignment? Is there a saturation point?
+11. **Method × alpha heatmap** — 6×3 grid (method rows, alpha cols) showing a single scalar
+    metric (e.g. CKA layer3) per cell. One figure per dataset per layer. Gives a complete
+    comparison matrix at a glance.
+12. **Accuracy vs. alignment scatter** — X=CKA layer3 (or effective dim), Y=test accuracy,
+    one point per (method, alpha, seed, dataset). Asks: does better alignment → better accuracy?
+    Does the relationship hold across alpha levels? This directly addresses the Stanton (2021)
+    puzzle ("distillation works but students don't match teachers in function space").
+
+*Nice to have (if time allows):*
+13. **Training dynamics** — CKA computed at checkpoints (e.g. every 30 epochs) to see when
+    alignment develops. Requires train.py to save intermediate checkpoints — add this to [7]
+    spec if desired. Note: this significantly increases storage.
+
+### Scale considerations
+
+Alpha's representations/ held ~24 .npz files (2 datasets × 6 models × [ignored seeds]).
+Charlie will have ~240 × 3 layers = ~720 .npz files per dataset. Each (N_test, D) array is
+small (e.g. CIFAR-10: 10000 × 64 float32 = 2.5MB), so total is manageable (~2GB for all
+datasets combined). No special handling needed; just check Lustre quota before extraction.
+
+### Analysis outputs structure
+
+```
+analysis/experiment_charlie/
+├── representations/{dataset}/{method}_a{alpha}_s{seed}.npz
+└── figures/{dataset}/
+    ├── [existing 9 figure types, one per method×alpha combination]
+    ├── alpha_sweep_{metric}.png          ← new: line plot vs alpha
+    ├── method_alpha_heatmap_{metric}.png ← new: 6×3 grid
+    └── accuracy_vs_alignment.png         ← new: scatter
+```
 
 ---
 
