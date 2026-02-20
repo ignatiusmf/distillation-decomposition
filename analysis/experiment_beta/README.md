@@ -1,53 +1,97 @@
 # Experiment Beta
 
-Second round of training experiments. Started 2026-02-20.
-**Status: IN PROGRESS** — waiting for new training runs to complete.
+Full-scale training run across all datasets and KD methods. Started ~2026-02-12.
+Trained models live in `experiments/` at the project root (to be moved here when all runs complete).
 
-## Motivation
+## Scope
 
-Experiment alpha produced small accuracy gaps between KD and pure students (~0.5–1% on CIFAR-10, ~2% on CIFAR-100). Several methods also failed outright (RKD) or never ran (SVHN). This round aims to produce more differentiated results. See `research/accuracy_considerations.md` for detailed reasoning.
+- **Datasets:** CIFAR-10, CIFAR-100, SVHN, TinyImageNet
+- **Methods:** pure (no KD), logit, factor_transfer, attention_transfer, fitnets, rkd, nst
+- **Seeds per condition:** varies (see below — `runner.py` had `runs = 1` for most)
+- **Teacher:** ResNet-112 (18 blocks/group, channels 16→32→64, GAP→linear)
+- **Student:** ResNet-56 (9 blocks/group, same channel structure)
+- **Architecture source:** `toolbox/models.py` — `ResNet_simple` with `BasicBlock`, `forward()` returns `[out1, out2, out3, logits]`
 
-## What Changed From Alpha
+## Training Configuration
 
-| Parameter | Alpha | Beta | Rationale |
-|-----------|-------|------|-----------|
-| _TBD — fill in when new configs are decided_ | | | |
+All experiments use identical hyperparameters (no per-method tuning).
 
-**Known issues from alpha that need fixing:**
-- RKD completely broken (18% CIFAR-10, 1% CIFAR-100) — implementation or hyperparameter bug
-- SVHN failed: `ModuleNotFoundError: No module named 'scipy'` on CHPC cluster (need `pip install scipy` in `myenv`)
-- Only seed 0 for AT, FitNets, RKD, NST — `runner.py` had `runs = 1`
-- TinyImageNet incomplete (teacher still training at epoch 127/150, logit at 58/150)
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| Epochs | 150 | `train.py` line 19: `EPOCHS = 150` |
+| Batch size | 128 | `train.py` line 20: `BATCH_SIZE = 128` |
+| Optimizer | SGD | `train.py` line 140: `optim.SGD(trainable_params, lr=0.1, momentum=0.9, weight_decay=5e-4)` |
+| Learning rate | 0.1 | Same line |
+| Momentum | 0.9 | Same line |
+| Weight decay | 5e-4 | Same line |
+| LR schedule | CosineAnnealingLR | `train.py` line 141: `CosineAnnealingLR(optimizer, T_max=EPOCHS)` |
+| Label smoothing | 0.1 | `train.py` line 192: `F.cross_entropy(outputs[-1], targets, label_smoothing=0.1)` |
+| KD alpha | 0.5 | `runner.py` line 135: `alpha=0.5` — applies to ALL methods |
+| KD temperature | 4.0 | `runner.py` line 135: `temperature=4.0` — only used by logit method |
+| Loss formula | `(1 - alpha) * CE + alpha * distill_loss` | `train.py` line 200 |
+| Device | CUDA | CHPC cluster GPU nodes |
 
-## Training Configuration (baseline — same as alpha until changed)
+### Seeding (deterministic training)
+```python
+# train.py lines 102-107
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+```
 
-| Parameter | Value |
-|-----------|-------|
-| Epochs | 150 |
-| Batch size | 128 |
-| Optimizer | SGD (momentum=0.9, weight_decay=5e-4) |
-| Learning rate | 0.1 |
-| LR schedule | CosineAnnealingLR (T_max=150) |
-| Label smoothing | 0.1 |
-| Loss formula | `(1 - alpha) * CE + alpha * distill_loss` |
-| KD alpha | 0.5 |
-| KD temperature | 4.0 (logit method only) |
-| Teacher | ResNet-112 (18 blocks/group, 3 layer groups: 16→32→64ch) |
-| Student | ResNet-56 (9 blocks/group, same channel structure) |
-| Seeding | `torch.manual_seed`, `cuda.manual_seed`, `np.random.seed`, `random.seed`, `cudnn.deterministic=True`, `cudnn.benchmark=False` |
+### KD Method Details
 
-## Experiment Matrix
+All methods receive the same `alpha=0.5`. The distillation loss function differs per method (implementations in `toolbox/distillation.py`):
 
-**Datasets:** Cifar10, Cifar100, SVHN, TinyImageNet
-**Methods:** pure (no KD), logit, factor_transfer, attention_transfer, fitnets, rkd, nst
-**Seeds:** 0 (runner.py `runs = 1`; increase to 3 for beta)
-**Models:** Teacher=ResNet112, Student=ResNet56
+| Method | What It Matches | Loss Operates On |
+|--------|----------------|------------------|
+| `logit` | Softened output distributions | KL divergence on logits/temperature |
+| `factor_transfer` | Factorised intermediate representations | L2 on paraphraser/translator outputs |
+| `attention_transfer` | Spatial attention maps | L2 on attention maps (sum of squared activations over channels) |
+| `fitnets` | Raw intermediate features | L2 on hint/guided layer pair (with regressor) |
+| `rkd` | Inter-sample distance and angle relations | Distance + angle loss on batch pairs |
+| `nst` | Neuron selectivity patterns | MMD-style loss on activation distributions |
 
-Full matrix = 4 datasets × (2 pure + 6 KD) × 3 seeds = **96 experiments**
+### Teacher Weights
 
-## Experiment Alpha Results (for comparison)
+Each KD student uses the teacher trained with the **same seed** on the **same dataset**:
+```
+teacher_weights = experiments/{dataset}/pure/ResNet112/{seed}/best.pth
+```
+This means seed 0 students learn from the seed 0 teacher, etc.
 
-### CIFAR-10
+### Runner Configuration
+
+`runner.py` line 108: `runs = 1` — meaning only seed 0 was queued for each condition. Seeds 1-2 exist for some conditions (pure/logit/factor on CIFAR-10/100) because `runs` was set to 3 in an earlier version of the runner.
+
+`runner.py` line 109: `datasets = ['Cifar100', 'Cifar10', 'SVHN', 'TinyImageNet']` — this order determines queue priority.
+
+Queue limit: 10 concurrent PBS jobs on CHPC (`runner.py` line 8).
+
+## Experiment Directory Structure
+
+```
+experiments/{Dataset}/{method}/{model_or_pair}/{seed}/
+```
+
+Each experiment directory contains:
+| File | Contents |
+|------|----------|
+| `best.pth` | Best model weights only (`{'weights': model.state_dict()}`). Used for inference and as teacher weights for KD. |
+| `checkpoint.pth` | Full training state: model, optimizer, scheduler, distillation module states, all metric arrays, max_acc. For resuming interrupted training. |
+| `metrics.json` | Complete training curves: `train_loss[]`, `train_acc[]`, `test_loss[]`, `test_acc[]` (one entry per epoch) + `config` dict. |
+| `status.json` | Quick lookup: `status` (completed/in_progress), `epoch`, `max_acc`, `config`. |
+| `Accuracy.png` | Train/test accuracy curve plot (generated by `toolbox/utils.py:plot_the_things`). |
+| `Loss.png` | Train/test loss curve plot. |
+| `logs` | Stdout from PBS job. |
+| `errors` | Stderr from PBS job (error tracebacks if failed). |
+
+## Results — All Experiments
+
+### CIFAR-10 (16 experiments, all completed)
 
 | Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
 |----------------|--------|--------|--------|------------|
@@ -58,14 +102,9 @@ Full matrix = 4 datasets × (2 pure + 6 KD) × 3 seeds = **96 experiments**
 | Attention Transfer | 94.12% | — | — | — |
 | FitNets | 93.84% | — | — | — |
 | NST | 93.62% | — | — | — |
-| **RKD** | **18.13%** | — | — | **FAILED** |
+| **RKD** | **18.13%** | — | — | **CATASTROPHIC FAILURE** |
 
-Key observations:
-- Pure student (93.20%) is already very close to teacher (93.55%). CIFAR-10 is too easy for this architecture pair.
-- Best KD method (AT: 94.12%) actually *exceeds* the teacher, which is interesting but the margin is tiny.
-- Logit seed 0 (92.35%) is an outlier — worse than pure. High seed variance (0.73%).
-
-### CIFAR-100
+### CIFAR-100 (16 experiments, all completed)
 
 | Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
 |----------------|--------|--------|--------|------------|
@@ -76,107 +115,63 @@ Key observations:
 | Attention Transfer | 71.56% | — | — | — |
 | FitNets | 70.23% | — | — | — |
 | NST | 71.46% | — | — | — |
-| **RKD** | **1.00%** | — | — | **FAILED** |
+| **RKD** | **1.00%** | — | — | **CATASTROPHIC FAILURE** |
 
-Key observations:
-- Teacher-student gap is ~1.1% — still small.
-- Logit KD has huge seed variance (1.73%) — seed 0 is *below* pure student, seeds 1-2 are *above* teacher.
-- FitNets (70.23%) actually hurt compared to pure (71.17%).
-
-### TinyImageNet (alpha — incomplete)
+### TinyImageNet (3 experiments, partially complete)
 
 | Model / Method | Seed 0 | Status |
 |----------------|--------|--------|
-| Teacher (ResNet-112) | 53.31% | in-progress (epoch 127/150) |
+| Teacher (ResNet-112) | 53.31% | in_progress (epoch 127/150) |
 | Student pure (ResNet-56) | 55.65% | completed |
-| Logit KD | 36.27% | in-progress (epoch 58/150) |
+| Logit KD | 36.27% | in_progress (epoch 58/150) |
 
-Note: Student *outperforming* teacher is suspicious — may indicate the larger model is harder to train on TinyImageNet with these hyperparameters.
+Remaining 5 methods (factor_transfer, attention_transfer, fitnets, rkd, nst) not yet queued — waiting for teacher to finish since KD needs teacher weights.
 
-### SVHN
+### SVHN (8 experiments, all failed)
 
-All 8 experiments (pure×2 + 6 KD methods, seed 0 each) failed at initialization:
+All 8 experiments (pure ResNet-112, pure ResNet-56, + 6 KD methods, seed 0 each) failed immediately at dataset loading:
+
 ```
-File ".../toolbox/data_loader.py", line 59, in get_loaders
-  trainset = ds(root=data_root, split='train', download=True, transform=transform_train)
-File ".../torchvision/datasets/svhn.py", line 75, in __init__
-  import scipy.io as sio
+File "/mnt/lustre/users/iferreira/distillation-decomposition/train.py", line 109, in <module>
+    Data = DATASETS[DATASET](BATCH_SIZE, seed=seed)
+File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 126, in SVHN
+    return DataHelper("SVHN", batch_size, data_root, seed)
+File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 102, in __init__
+    self.trainloader, self.testloader = get_loaders(dataset, batch_size, data_root, seed)
+File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 59, in get_loaders
+    trainset = ds(root=data_root, split='train', download=True, transform=transform_train)
+File "/home/iferreira/myenv/lib/python3.12/site-packages/torchvision/datasets/svhn.py", line 75, in __init__
+    import scipy.io as sio
 ModuleNotFoundError: No module named 'scipy'
 ```
-Fix: `pip install scipy` in CHPC environment (`/home/iferreira/myenv/`).
 
-## Key Files
+**Fix:** `pip install scipy` in CHPC environment (`/home/iferreira/myenv/`). The SVHN dataset uses `.mat` files which require scipy to load.
 
-| File | Purpose |
-|------|---------|
-| `train.py` | Training script (150 epochs, SGD, cosine LR) |
-| `runner.py` | PBS job generation and queuing (CHPC cluster) |
-| `toolbox/models.py` | ResNet architectures (ResNet112/56/20/Baby) |
-| `toolbox/data_loader.py` | Dataset loaders (CIFAR-10/100, SVHN, TinyImageNet) |
-| `toolbox/distillation.py` | KD method implementations |
-| `run.job` | PBS job template |
+## Known Issues
 
-## Experiment Beta Results
+1. **RKD catastrophic failure** — 18.13% on CIFAR-10 (near random for 10 classes), 1.00% on CIFAR-100 (literally random for 100 classes). Ran for all 150 epochs without converging. Likely cause: the RKD relational loss (distance + angle between sample pairs) has a very different scale than cross-entropy, and at `alpha=0.5` it dominates the gradient signal, preventing the student from learning discriminative features. Potential fixes: lower alpha (0.1), add loss normalisation, or check the implementation in `toolbox/distillation.py`.
 
-_To be filled in as experiments complete._
+2. **SVHN never ran** — scipy not installed on CHPC. All 8 SVHN experiments have empty status.json and error tracebacks.
 
-### CIFAR-10
+3. **Incomplete seeds** — AT, FitNets, RKD, NST only have seed 0. Pure, logit, factor_transfer have seeds 0-2. This is because `runner.py` `runs` was changed from 3 to 1 at some point.
 
-| Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
-|----------------|--------|--------|--------|------------|
-| Teacher (ResNet-112) | | | | |
-| Student pure (ResNet-56) | | | | |
-| Logit KD | | | | |
-| Factor Transfer | | | | |
-| Attention Transfer | | | | |
-| FitNets | | | | |
-| NST | | | | |
-| RKD | | | | |
+4. **TinyImageNet incomplete** — Teacher still training (epoch 127/150). Logit KD started but only at epoch 58/150 (uses the in-progress teacher's best.pth as it existed when queued). Remaining KD methods blocked on teacher completion.
 
-### CIFAR-100
+5. **TinyImageNet student > teacher** — Pure ResNet-56 (55.65%) outperforms the ResNet-112 teacher (53.31% at epoch 127). Could change once teacher finishes, but worth watching — deeper ResNets can underperform on small images if not tuned.
 
-| Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
-|----------------|--------|--------|--------|------------|
-| Teacher (ResNet-112) | | | | |
-| Student pure (ResNet-56) | | | | |
-| Logit KD | | | | |
-| Factor Transfer | | | | |
-| Attention Transfer | | | | |
-| FitNets | | | | |
-| NST | | | | |
-| RKD | | | | |
+6. **Small accuracy gaps** — On CIFAR-10/100, KD methods are within ~0.5–1% of pure student. See `research/accuracy_considerations.md` for discussion on why this is actually fine for the thesis.
 
-### SVHN
-
-| Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
-|----------------|--------|--------|--------|------------|
-| Teacher (ResNet-112) | | | | |
-| Student pure (ResNet-56) | | | | |
-| Logit KD | | | | |
-| Factor Transfer | | | | |
-| Attention Transfer | | | | |
-| FitNets | | | | |
-| NST | | | | |
-| RKD | | | | |
-
-### TinyImageNet
-
-| Model / Method | Seed 0 | Seed 1 | Seed 2 | Mean ± Std |
-|----------------|--------|--------|--------|------------|
-| Teacher (ResNet-112) | | | | |
-| Student pure (ResNet-56) | | | | |
-| Logit KD | | | | |
-| Factor Transfer | | | | |
-| Attention Transfer | | | | |
-| FitNets | | | | |
-| NST | | | | |
-| RKD | | | | |
+7. **Logit KD seed variance on CIFAR-100** — Seed 0 (69.39%) is 3.77% below seed 2 (73.16%). Seed 0 is worse than pure student; seed 2 exceeds the teacher. Unusual instability.
 
 ## Archival Checklist (when all runs are done)
 
-- [ ] Fill in all accuracy tables above
+- [ ] All CIFAR-10 runs completed (currently: done)
+- [ ] All CIFAR-100 runs completed (currently: done)
+- [ ] All TinyImageNet runs completed (currently: 2 in-progress, 5 not started)
+- [ ] All SVHN runs completed (currently: all failed — need scipy fix)
+- [ ] Fill in final accuracy tables above
 - [ ] Move `experiments/` into `analysis/experiment_beta/experiments/`
 - [ ] Create new blank `experiments/` directory
-- [ ] Run `extract.py` to get representations
-- [ ] Run `analyze.py` to generate figures
-- [ ] Move analysis scripts and outputs into this directory
+- [ ] Copy `extract.py` and `analyze.py` here (or new versions if modified)
+- [ ] Run extraction and analysis
+- [ ] Move representations and figures here

@@ -2,7 +2,7 @@
 #PBS -N {experiment_name}
 #PBS -q gpu_1
 #PBS -P CSCI1166
-#PBS -l select=1:ncpus=10:mpiprocs=10:mem=32gb:ngpus=1
+#PBS -l select=1:ncpus=8:mpiprocs=8:mem=16gb:ngpus=1
 #PBS -l walltime=2:00:00
 #PBS -o /mnt/lustre/users/iferreira/distillation-decomposition/experiments/{experiment_name}/logs
 #PBS -e /mnt/lustre/users/iferreira/distillation-decomposition/experiments/{experiment_name}/errors
