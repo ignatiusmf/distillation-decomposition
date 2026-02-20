@@ -1,0 +1,7 @@
+Fri Feb 20 15:42:52 SAST 2026
+Running python train.py --model ResNet56 --dataset SVHN --seed 0 --distillation attention_transfer --teacher_model ResNet112 --teacher_weights experiments/SVHN/pure/ResNet112/0/best.pth --alpha 0.5
+
+{'model': 'ResNet56', 'dataset': 'SVHN', 'seed': 0, 'distillation': 'attention_transfer', 'teacher_model': 'ResNet112', 'teacher_weights': 'experiments/SVHN/pure/ResNet112/0/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Using downloaded and verified file: ./data/train_32x32.mat
+
+Total execution time: 5 seconds

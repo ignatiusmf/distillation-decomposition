@@ -1,0 +1,464 @@
+Thu Feb 19 21:09:26 SAST 2026
+Running python train.py --model ResNet56 --dataset Cifar10 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar10/pure/ResNet112/0/best.pth --alpha 0.5
+
+{'model': 'ResNet56', 'dataset': 'Cifar10', 'seed': 0, 'distillation': 'rkd', 'teacher_model': 'ResNet112', 'teacher_weights': 'experiments/Cifar10/pure/ResNet112/0/best.pth', 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Files already downloaded and verified
+Files already downloaded and verified
+Loaded teacher model: ResNet112 from experiments/Cifar10/pure/ResNet112/0/best.pth
+Epoch 0
+TRAIN | Loss: 15.371 | Acc: 10.61 |
+TEST | Loss: 1568.384 | Acc: 7.930 |
+Saved best model to experiments/Cifar10/rkd/ResNet112_to_ResNet56/0/best.pth
+Epoch 1
+TRAIN | Loss: 15.533 | Acc: 12.35 |
+TEST | Loss: 2.211 | Acc: 18.130 |
+Saved best model to experiments/Cifar10/rkd/ResNet112_to_ResNet56/0/best.pth
+Epoch 2
+TRAIN | Loss: 6.277 | Acc: 13.32 |
+TEST | Loss: 2.304 | Acc: 10.520 |
+Epoch 3
+TRAIN | Loss: 8.737 | Acc: 10.33 |
+TEST | Loss: 2.398 | Acc: 10.000 |
+Epoch 4
+TRAIN | Loss: 15.783 | Acc: 9.77 |
+TEST | Loss: 2.367 | Acc: 10.000 |
+Epoch 5
+TRAIN | Loss: 17.385 | Acc: 10.07 |
+TEST | Loss: 2.338 | Acc: 10.000 |
+Epoch 6
+TRAIN | Loss: 17.726 | Acc: 9.95 |
+TEST | Loss: 2.316 | Acc: 10.000 |
+Epoch 7
+TRAIN | Loss: 17.446 | Acc: 9.97 |
+TEST | Loss: 2.312 | Acc: 10.000 |
+Epoch 8
+TRAIN | Loss: 17.734 | Acc: 9.94 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 9
+TRAIN | Loss: 16.402 | Acc: 9.89 |
+TEST | Loss: 2.365 | Acc: 10.000 |
+Epoch 10
+TRAIN | Loss: 18.514 | Acc: 10.11 |
+TEST | Loss: 2.368 | Acc: 10.000 |
+Epoch 11
+TRAIN | Loss: 18.411 | Acc: 9.90 |
+TEST | Loss: 2.309 | Acc: 10.000 |
+Epoch 12
+TRAIN | Loss: 18.688 | Acc: 10.10 |
+TEST | Loss: 2.308 | Acc: 10.000 |
+Epoch 13
+TRAIN | Loss: 15.153 | Acc: 9.84 |
+TEST | Loss: 2.332 | Acc: 10.000 |
+Epoch 14
+TRAIN | Loss: 16.473 | Acc: 10.10 |
+TEST | Loss: 2.314 | Acc: 10.000 |
+Epoch 15
+TRAIN | Loss: 16.817 | Acc: 10.01 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 16
+TRAIN | Loss: 19.711 | Acc: 10.08 |
+TEST | Loss: 2.370 | Acc: 10.000 |
+Epoch 17
+TRAIN | Loss: 20.413 | Acc: 9.95 |
+TEST | Loss: 2.422 | Acc: 10.000 |
+Epoch 18
+TRAIN | Loss: 20.567 | Acc: 10.05 |
+TEST | Loss: 2.377 | Acc: 10.000 |
+Epoch 19
+TRAIN | Loss: 20.488 | Acc: 9.72 |
+TEST | Loss: 2.405 | Acc: 10.000 |
+Epoch 20
+TRAIN | Loss: 20.046 | Acc: 9.82 |
+TEST | Loss: 2.366 | Acc: 10.000 |
+Epoch 21
+TRAIN | Loss: 16.190 | Acc: 10.12 |
+TEST | Loss: 5.652 | Acc: 10.000 |
+Epoch 22
+TRAIN | Loss: 18.005 | Acc: 9.95 |
+TEST | Loss: 2.318 | Acc: 10.000 |
+Epoch 23
+TRAIN | Loss: 20.072 | Acc: 9.84 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 24
+TRAIN | Loss: 19.252 | Acc: 9.85 |
+TEST | Loss: 2.553 | Acc: 10.000 |
+Epoch 25
+TRAIN | Loss: 19.758 | Acc: 10.01 |
+TEST | Loss: 2.348 | Acc: 10.000 |
+Epoch 26
+TRAIN | Loss: 20.279 | Acc: 10.15 |
+TEST | Loss: 2.402 | Acc: 10.000 |
+Epoch 27
+TRAIN | Loss: 19.894 | Acc: 9.92 |
+TEST | Loss: 2.321 | Acc: 10.000 |
+Epoch 28
+TRAIN | Loss: 20.344 | Acc: 9.66 |
+TEST | Loss: 6.603 | Acc: 10.000 |
+Epoch 29
+TRAIN | Loss: 20.259 | Acc: 9.97 |
+TEST | Loss: 2.321 | Acc: 10.000 |
+Epoch 30
+TRAIN | Loss: 18.225 | Acc: 10.12 |
+TEST | Loss: 2.381 | Acc: 10.000 |
+Epoch 31
+TRAIN | Loss: 18.994 | Acc: 10.08 |
+TEST | Loss: 2.364 | Acc: 10.000 |
+Epoch 32
+TRAIN | Loss: 18.970 | Acc: 9.83 |
+TEST | Loss: 2.315 | Acc: 10.000 |
+Epoch 33
+TRAIN | Loss: 19.778 | Acc: 9.97 |
+TEST | Loss: 2.333 | Acc: 10.000 |
+Epoch 34
+TRAIN | Loss: 20.661 | Acc: 10.00 |
+TEST | Loss: 2.328 | Acc: 10.000 |
+Epoch 35
+TRAIN | Loss: 18.973 | Acc: 10.20 |
+TEST | Loss: 2.377 | Acc: 10.000 |
+Epoch 36
+TRAIN | Loss: 19.156 | Acc: 10.01 |
+TEST | Loss: 2.309 | Acc: 10.000 |
+Epoch 37
+TRAIN | Loss: 19.582 | Acc: 9.83 |
+TEST | Loss: 2.493 | Acc: 10.000 |
+Epoch 38
+TRAIN | Loss: 19.749 | Acc: 10.01 |
+TEST | Loss: 2.346 | Acc: 10.000 |
+Epoch 39
+TRAIN | Loss: 19.919 | Acc: 10.22 |
+TEST | Loss: 2.514 | Acc: 10.000 |
+Epoch 40
+TRAIN | Loss: 20.094 | Acc: 9.96 |
+TEST | Loss: 2.351 | Acc: 10.000 |
+Epoch 41
+TRAIN | Loss: 19.569 | Acc: 9.95 |
+TEST | Loss: 2.323 | Acc: 10.000 |
+Epoch 42
+TRAIN | Loss: 20.811 | Acc: 10.04 |
+TEST | Loss: 2.412 | Acc: 10.000 |
+Epoch 43
+TRAIN | Loss: 20.648 | Acc: 9.94 |
+TEST | Loss: 2.430 | Acc: 10.000 |
+Epoch 44
+TRAIN | Loss: 20.724 | Acc: 9.90 |
+TEST | Loss: 2.394 | Acc: 10.000 |
+Epoch 45
+TRAIN | Loss: 20.598 | Acc: 10.06 |
+TEST | Loss: 2.334 | Acc: 10.000 |
+Epoch 46
+TRAIN | Loss: 6.943 | Acc: 9.85 |
+TEST | Loss: 4.874 | Acc: 10.000 |
+Epoch 47
+TRAIN | Loss: 15.843 | Acc: 9.95 |
+TEST | Loss: 2.386 | Acc: 10.000 |
+Epoch 48
+TRAIN | Loss: 19.889 | Acc: 10.02 |
+TEST | Loss: 2.317 | Acc: 10.000 |
+Epoch 49
+TRAIN | Loss: 19.614 | Acc: 10.18 |
+TEST | Loss: 2.690 | Acc: 10.000 |
+Epoch 50
+TRAIN | Loss: 20.320 | Acc: 10.00 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 51
+TRAIN | Loss: 20.354 | Acc: 9.92 |
+TEST | Loss: 2.314 | Acc: 10.000 |
+Epoch 52
+TRAIN | Loss: 18.698 | Acc: 10.07 |
+TEST | Loss: 31.811 | Acc: 10.000 |
+Epoch 53
+TRAIN | Loss: 19.365 | Acc: 9.72 |
+TEST | Loss: 2.318 | Acc: 10.000 |
+Epoch 54
+TRAIN | Loss: 20.542 | Acc: 9.89 |
+TEST | Loss: 2.317 | Acc: 10.000 |
+Epoch 55
+TRAIN | Loss: 20.505 | Acc: 9.93 |
+TEST | Loss: 2.313 | Acc: 10.000 |
+Epoch 56
+TRAIN | Loss: 20.560 | Acc: 10.04 |
+TEST | Loss: 2.314 | Acc: 10.000 |
+Epoch 57
+TRAIN | Loss: 20.337 | Acc: 10.31 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 58
+TRAIN | Loss: 20.168 | Acc: 10.06 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 59
+TRAIN | Loss: 20.608 | Acc: 9.96 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 60
+TRAIN | Loss: 20.357 | Acc: 10.07 |
+TEST | Loss: 2.312 | Acc: 10.000 |
+Epoch 61
+TRAIN | Loss: 20.558 | Acc: 9.94 |
+TEST | Loss: 2.332 | Acc: 10.000 |
+Epoch 62
+TRAIN | Loss: 20.458 | Acc: 10.12 |
+TEST | Loss: 2.337 | Acc: 10.000 |
+Epoch 63
+TRAIN | Loss: 20.183 | Acc: 9.94 |
+TEST | Loss: 2.322 | Acc: 10.000 |
+Epoch 64
+TRAIN | Loss: 20.474 | Acc: 9.71 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 65
+TRAIN | Loss: 19.996 | Acc: 10.07 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 66
+TRAIN | Loss: 17.595 | Acc: 9.85 |
+TEST | Loss: 2.314 | Acc: 10.000 |
+Epoch 67
+TRAIN | Loss: 19.426 | Acc: 10.21 |
+TEST | Loss: 2.365 | Acc: 10.000 |
+Epoch 68
+TRAIN | Loss: 19.265 | Acc: 9.95 |
+TEST | Loss: 2.420 | Acc: 10.000 |
+Epoch 69
+TRAIN | Loss: 20.046 | Acc: 9.65 |
+TEST | Loss: 2.719 | Acc: 10.000 |
+Epoch 70
+TRAIN | Loss: 19.892 | Acc: 9.82 |
+TEST | Loss: 2.327 | Acc: 10.000 |
+Epoch 71
+TRAIN | Loss: 19.494 | Acc: 10.03 |
+TEST | Loss: 2.382 | Acc: 10.000 |
+Epoch 72
+TRAIN | Loss: 19.539 | Acc: 10.09 |
+TEST | Loss: 2.343 | Acc: 10.000 |
+Epoch 73
+TRAIN | Loss: 18.470 | Acc: 10.07 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 74
+TRAIN | Loss: 19.303 | Acc: 9.89 |
+TEST | Loss: 2.329 | Acc: 10.000 |
+Epoch 75
+TRAIN | Loss: 19.695 | Acc: 9.94 |
+TEST | Loss: 2.324 | Acc: 10.000 |
+Epoch 76
+TRAIN | Loss: 19.834 | Acc: 10.10 |
+TEST | Loss: 2.310 | Acc: 10.000 |
+Epoch 77
+TRAIN | Loss: 20.400 | Acc: 9.89 |
+TEST | Loss: 2.397 | Acc: 10.000 |
+Epoch 78
+TRAIN | Loss: 20.042 | Acc: 10.03 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 79
+TRAIN | Loss: 20.737 | Acc: 9.91 |
+TEST | Loss: 2.315 | Acc: 10.000 |
+Epoch 80
+TRAIN | Loss: 19.453 | Acc: 9.98 |
+TEST | Loss: 2.314 | Acc: 10.000 |
+Epoch 81
+TRAIN | Loss: 19.812 | Acc: 10.08 |
+TEST | Loss: 2.411 | Acc: 10.000 |
+Epoch 82
+TRAIN | Loss: 20.388 | Acc: 9.96 |
+TEST | Loss: 2.344 | Acc: 10.000 |
+Epoch 83
+TRAIN | Loss: 20.068 | Acc: 9.94 |
+TEST | Loss: 2.306 | Acc: 10.000 |
+Epoch 84
+TRAIN | Loss: 20.092 | Acc: 9.89 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 85
+TRAIN | Loss: 18.558 | Acc: 9.94 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 86
+TRAIN | Loss: 19.149 | Acc: 9.94 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 87
+TRAIN | Loss: 43.164 | Acc: 10.09 |
+TEST | Loss: 2.500 | Acc: 10.000 |
+Epoch 88
+TRAIN | Loss: 19.355 | Acc: 10.20 |
+TEST | Loss: 2.479 | Acc: 10.000 |
+Epoch 89
+TRAIN | Loss: 18.208 | Acc: 9.94 |
+TEST | Loss: 2.340 | Acc: 10.000 |
+Epoch 90
+TRAIN | Loss: 18.414 | Acc: 9.99 |
+TEST | Loss: 2.308 | Acc: 10.000 |
+Epoch 91
+TRAIN | Loss: 18.488 | Acc: 10.01 |
+TEST | Loss: 2.319 | Acc: 10.000 |
+Epoch 92
+TRAIN | Loss: 18.312 | Acc: 9.65 |
+TEST | Loss: 2.306 | Acc: 10.000 |
+Epoch 93
+TRAIN | Loss: 18.475 | Acc: 10.05 |
+TEST | Loss: 2.319 | Acc: 10.000 |
+Epoch 94
+TRAIN | Loss: 19.743 | Acc: 9.94 |
+TEST | Loss: 2.317 | Acc: 10.000 |
+Epoch 95
+TRAIN | Loss: 19.010 | Acc: 9.72 |
+TEST | Loss: 2.340 | Acc: 10.000 |
+Epoch 96
+TRAIN | Loss: 19.304 | Acc: 9.99 |
+TEST | Loss: 2.311 | Acc: 10.000 |
+Epoch 97
+TRAIN | Loss: 18.927 | Acc: 10.11 |
+TEST | Loss: 2.319 | Acc: 10.000 |
+Epoch 98
+TRAIN | Loss: 18.880 | Acc: 9.79 |
+TEST | Loss: 2.316 | Acc: 10.000 |
+Epoch 99
+TRAIN | Loss: 18.850 | Acc: 10.04 |
+TEST | Loss: 2.312 | Acc: 10.000 |
+Epoch 100
+TRAIN | Loss: 19.239 | Acc: 10.17 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 101
+TRAIN | Loss: 19.042 | Acc: 9.92 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 102
+TRAIN | Loss: 18.878 | Acc: 10.01 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 103
+TRAIN | Loss: 18.483 | Acc: 9.94 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 104
+TRAIN | Loss: 19.019 | Acc: 9.93 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 105
+TRAIN | Loss: 19.015 | Acc: 9.93 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 106
+TRAIN | Loss: 19.000 | Acc: 9.71 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 107
+TRAIN | Loss: 19.338 | Acc: 9.93 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 108
+TRAIN | Loss: 19.354 | Acc: 9.87 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 109
+TRAIN | Loss: 19.072 | Acc: 9.99 |
+TEST | Loss: 2.307 | Acc: 10.000 |
+Epoch 110
+TRAIN | Loss: 19.332 | Acc: 9.87 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 111
+TRAIN | Loss: 19.194 | Acc: 10.05 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 112
+TRAIN | Loss: 19.155 | Acc: 10.27 |
+TEST | Loss: 2.308 | Acc: 10.000 |
+Epoch 113
+TRAIN | Loss: 18.928 | Acc: 9.94 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 114
+TRAIN | Loss: 18.860 | Acc: 10.05 |
+TEST | Loss: 2.305 | Acc: 10.000 |
+Epoch 115
+TRAIN | Loss: 18.667 | Acc: 9.97 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 116
+TRAIN | Loss: 18.587 | Acc: 9.97 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 117
+TRAIN | Loss: 18.455 | Acc: 10.00 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 118
+TRAIN | Loss: 18.442 | Acc: 9.82 |
+TEST | Loss: 2.306 | Acc: 10.000 |
+Epoch 119
+TRAIN | Loss: 18.813 | Acc: 10.02 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 120
+TRAIN | Loss: 18.454 | Acc: 10.24 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 121
+TRAIN | Loss: 18.631 | Acc: 9.89 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 122
+TRAIN | Loss: 18.087 | Acc: 10.03 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 123
+TRAIN | Loss: 18.449 | Acc: 9.74 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 124
+TRAIN | Loss: 18.553 | Acc: 10.01 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 125
+TRAIN | Loss: 18.701 | Acc: 10.21 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 126
+TRAIN | Loss: 18.711 | Acc: 9.75 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 127
+TRAIN | Loss: 18.265 | Acc: 10.05 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 128
+TRAIN | Loss: 18.712 | Acc: 10.00 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 129
+TRAIN | Loss: 19.003 | Acc: 10.20 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 130
+TRAIN | Loss: 18.066 | Acc: 9.90 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 131
+TRAIN | Loss: 18.658 | Acc: 9.85 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 132
+TRAIN | Loss: 18.774 | Acc: 9.80 |
+TEST | Loss: 2.304 | Acc: 10.000 |
+Epoch 133
+TRAIN | Loss: 18.507 | Acc: 10.23 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 134
+TRAIN | Loss: 18.872 | Acc: 9.95 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 135
+TRAIN | Loss: 18.695 | Acc: 9.72 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 136
+TRAIN | Loss: 17.985 | Acc: 9.81 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 137
+TRAIN | Loss: 18.287 | Acc: 9.78 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 138
+TRAIN | Loss: 18.411 | Acc: 9.57 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 139
+TRAIN | Loss: 18.625 | Acc: 9.87 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 140
+TRAIN | Loss: 18.647 | Acc: 9.92 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 141
+TRAIN | Loss: 18.647 | Acc: 9.86 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 142
+TRAIN | Loss: 18.642 | Acc: 10.02 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 143
+TRAIN | Loss: 18.558 | Acc: 9.97 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 144
+TRAIN | Loss: 18.642 | Acc: 9.78 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 145
+TRAIN | Loss: 18.706 | Acc: 9.62 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 146
+TRAIN | Loss: 18.721 | Acc: 9.74 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 147
+TRAIN | Loss: 18.733 | Acc: 9.67 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 148
+TRAIN | Loss: 18.773 | Acc: 10.00 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+Epoch 149
+TRAIN | Loss: 18.697 | Acc: 10.00 |
+TEST | Loss: 2.303 | Acc: 10.000 |
+
+Training completed! Best accuracy: 18.13%
+Best model saved to: experiments/Cifar10/rkd/ResNet112_to_ResNet56/0/best.pth
+
+Total execution time: 3374 seconds

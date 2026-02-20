@@ -1,0 +1,16 @@
+{
+  "status": "in_progress",
+  "epoch": 58,
+  "max_acc": 36.27,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "TinyImageNet",
+    "seed": 0,
+    "distillation": "logit",
+    "teacher_model": "ResNet112",
+    "teacher_weights": "experiments/TinyImageNet/pure/ResNet112/0/best.pth",
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  }
+}

@@ -1,0 +1,260 @@
+Fri Feb 20 11:17:14 SAST 2026
+Running python train.py --model ResNet56 --dataset TinyImageNet --seed 0
+
+{'model': 'ResNet56', 'dataset': 'TinyImageNet', 'seed': 0, 'distillation': 'none', 'teacher_model': None, 'teacher_weights': None, 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Found checkpoint at experiments/TinyImageNet/pure/ResNet56/0/checkpoint.pth
+Resuming from epoch 80, max_acc=34.07%
+Epoch 80
+TRAIN | Loss: 3.413 | Acc: 31.97 |
+TEST | Loss: 2.816 | Acc: 34.170 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 81
+TRAIN | Loss: 3.406 | Acc: 32.33 |
+TEST | Loss: 2.767 | Acc: 35.270 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 82
+TRAIN | Loss: 3.397 | Acc: 32.50 |
+TEST | Loss: 2.793 | Acc: 34.940 |
+Epoch 83
+TRAIN | Loss: 3.389 | Acc: 32.63 |
+TEST | Loss: 2.719 | Acc: 36.720 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 84
+TRAIN | Loss: 3.377 | Acc: 32.96 |
+TEST | Loss: 2.709 | Acc: 36.350 |
+Epoch 85
+TRAIN | Loss: 3.374 | Acc: 33.01 |
+TEST | Loss: 2.831 | Acc: 34.460 |
+Epoch 86
+TRAIN | Loss: 3.370 | Acc: 33.27 |
+TEST | Loss: 2.751 | Acc: 35.830 |
+Epoch 87
+TRAIN | Loss: 3.358 | Acc: 33.52 |
+TEST | Loss: 2.794 | Acc: 34.710 |
+Epoch 88
+TRAIN | Loss: 3.351 | Acc: 33.86 |
+TEST | Loss: 2.594 | Acc: 39.100 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 89
+TRAIN | Loss: 3.340 | Acc: 33.78 |
+TEST | Loss: 2.744 | Acc: 36.310 |
+Epoch 90
+TRAIN | Loss: 3.338 | Acc: 33.91 |
+TEST | Loss: 2.770 | Acc: 36.250 |
+Epoch 91
+TRAIN | Loss: 3.328 | Acc: 34.15 |
+TEST | Loss: 2.769 | Acc: 36.410 |
+Epoch 92
+TRAIN | Loss: 3.310 | Acc: 34.52 |
+TEST | Loss: 2.834 | Acc: 35.020 |
+Epoch 93
+TRAIN | Loss: 3.301 | Acc: 34.90 |
+TEST | Loss: 2.731 | Acc: 36.660 |
+Epoch 94
+TRAIN | Loss: 3.299 | Acc: 35.10 |
+TEST | Loss: 2.577 | Acc: 39.530 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 95
+TRAIN | Loss: 3.295 | Acc: 34.98 |
+TEST | Loss: 2.635 | Acc: 37.720 |
+Epoch 96
+TRAIN | Loss: 3.282 | Acc: 35.40 |
+TEST | Loss: 2.585 | Acc: 38.540 |
+Epoch 97
+TRAIN | Loss: 3.269 | Acc: 35.63 |
+TEST | Loss: 2.553 | Acc: 40.060 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 98
+TRAIN | Loss: 3.263 | Acc: 35.95 |
+TEST | Loss: 2.524 | Acc: 40.720 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 99
+TRAIN | Loss: 3.250 | Acc: 36.20 |
+TEST | Loss: 2.543 | Acc: 40.560 |
+Epoch 100
+TRAIN | Loss: 3.245 | Acc: 36.34 |
+TEST | Loss: 2.530 | Acc: 40.710 |
+Epoch 101
+TRAIN | Loss: 3.236 | Acc: 36.52 |
+TEST | Loss: 2.577 | Acc: 38.980 |
+Epoch 102
+TRAIN | Loss: 3.222 | Acc: 36.91 |
+TEST | Loss: 2.495 | Acc: 41.730 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 103
+TRAIN | Loss: 3.214 | Acc: 37.14 |
+TEST | Loss: 2.466 | Acc: 41.840 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 104
+TRAIN | Loss: 3.199 | Acc: 37.55 |
+TEST | Loss: 2.440 | Acc: 42.220 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 105
+TRAIN | Loss: 3.196 | Acc: 37.59 |
+TEST | Loss: 2.524 | Acc: 40.130 |
+Epoch 106
+TRAIN | Loss: 3.179 | Acc: 38.08 |
+TEST | Loss: 2.453 | Acc: 42.300 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 107
+TRAIN | Loss: 3.170 | Acc: 38.13 |
+TEST | Loss: 2.375 | Acc: 43.480 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 108
+TRAIN | Loss: 3.164 | Acc: 38.40 |
+TEST | Loss: 2.414 | Acc: 42.770 |
+Epoch 109
+TRAIN | Loss: 3.149 | Acc: 38.87 |
+TEST | Loss: 2.496 | Acc: 41.740 |
+Epoch 110
+TRAIN | Loss: 3.132 | Acc: 39.26 |
+TEST | Loss: 2.416 | Acc: 43.310 |
+Epoch 111
+TRAIN | Loss: 3.127 | Acc: 39.27 |
+TEST | Loss: 2.358 | Acc: 44.220 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 112
+TRAIN | Loss: 3.116 | Acc: 39.81 |
+TEST | Loss: 2.347 | Acc: 45.160 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 113
+TRAIN | Loss: 3.110 | Acc: 39.90 |
+TEST | Loss: 2.369 | Acc: 44.370 |
+Epoch 114
+TRAIN | Loss: 3.090 | Acc: 40.18 |
+TEST | Loss: 2.290 | Acc: 45.440 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 115
+TRAIN | Loss: 3.082 | Acc: 40.48 |
+TEST | Loss: 2.205 | Acc: 47.580 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 116
+TRAIN | Loss: 3.068 | Acc: 40.92 |
+TEST | Loss: 2.272 | Acc: 45.810 |
+Epoch 117
+TRAIN | Loss: 3.062 | Acc: 40.95 |
+TEST | Loss: 2.261 | Acc: 46.090 |
+Epoch 118
+TRAIN | Loss: 3.044 | Acc: 41.36 |
+TEST | Loss: 2.253 | Acc: 46.810 |
+Epoch 119
+TRAIN | Loss: 3.028 | Acc: 41.99 |
+TEST | Loss: 2.236 | Acc: 46.700 |
+Epoch 120
+TRAIN | Loss: 3.015 | Acc: 42.26 |
+TEST | Loss: 2.215 | Acc: 47.340 |
+Epoch 121
+TRAIN | Loss: 3.004 | Acc: 42.76 |
+TEST | Loss: 2.185 | Acc: 47.710 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 122
+TRAIN | Loss: 2.990 | Acc: 42.81 |
+TEST | Loss: 2.178 | Acc: 47.850 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 123
+TRAIN | Loss: 2.979 | Acc: 43.39 |
+TEST | Loss: 2.157 | Acc: 48.740 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 124
+TRAIN | Loss: 2.963 | Acc: 43.84 |
+TEST | Loss: 2.160 | Acc: 49.160 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 125
+TRAIN | Loss: 2.950 | Acc: 43.91 |
+TEST | Loss: 2.139 | Acc: 49.060 |
+Epoch 126
+TRAIN | Loss: 2.934 | Acc: 44.60 |
+TEST | Loss: 2.103 | Acc: 49.750 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 127
+TRAIN | Loss: 2.919 | Acc: 44.83 |
+TEST | Loss: 2.068 | Acc: 50.520 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 128
+TRAIN | Loss: 2.907 | Acc: 45.18 |
+TEST | Loss: 2.100 | Acc: 49.970 |
+Epoch 129
+TRAIN | Loss: 2.890 | Acc: 45.48 |
+TEST | Loss: 2.050 | Acc: 51.220 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 130
+TRAIN | Loss: 2.883 | Acc: 45.78 |
+TEST | Loss: 2.031 | Acc: 51.900 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 131
+TRAIN | Loss: 2.870 | Acc: 46.08 |
+TEST | Loss: 2.002 | Acc: 52.500 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 132
+TRAIN | Loss: 2.847 | Acc: 46.78 |
+TEST | Loss: 2.022 | Acc: 51.650 |
+Epoch 133
+TRAIN | Loss: 2.832 | Acc: 47.26 |
+TEST | Loss: 1.983 | Acc: 52.620 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 134
+TRAIN | Loss: 2.820 | Acc: 47.80 |
+TEST | Loss: 2.004 | Acc: 53.050 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 135
+TRAIN | Loss: 2.809 | Acc: 47.80 |
+TEST | Loss: 1.949 | Acc: 53.600 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 136
+TRAIN | Loss: 2.787 | Acc: 48.30 |
+TEST | Loss: 1.960 | Acc: 53.430 |
+Epoch 137
+TRAIN | Loss: 2.777 | Acc: 48.72 |
+TEST | Loss: 1.943 | Acc: 53.430 |
+Epoch 138
+TRAIN | Loss: 2.767 | Acc: 48.85 |
+TEST | Loss: 1.941 | Acc: 53.760 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 139
+TRAIN | Loss: 2.750 | Acc: 49.34 |
+TEST | Loss: 1.919 | Acc: 54.510 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 140
+TRAIN | Loss: 2.734 | Acc: 49.83 |
+TEST | Loss: 1.901 | Acc: 54.650 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 141
+TRAIN | Loss: 2.723 | Acc: 50.20 |
+TEST | Loss: 1.889 | Acc: 54.790 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 142
+TRAIN | Loss: 2.721 | Acc: 50.07 |
+TEST | Loss: 1.888 | Acc: 55.020 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 143
+TRAIN | Loss: 2.706 | Acc: 50.62 |
+TEST | Loss: 1.887 | Acc: 55.060 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 144
+TRAIN | Loss: 2.698 | Acc: 50.95 |
+TEST | Loss: 1.880 | Acc: 55.210 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 145
+TRAIN | Loss: 2.691 | Acc: 51.26 |
+TEST | Loss: 1.876 | Acc: 55.400 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 146
+TRAIN | Loss: 2.691 | Acc: 51.24 |
+TEST | Loss: 1.872 | Acc: 55.480 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 147
+TRAIN | Loss: 2.689 | Acc: 51.10 |
+TEST | Loss: 1.864 | Acc: 55.600 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 148
+TRAIN | Loss: 2.685 | Acc: 51.44 |
+TEST | Loss: 1.864 | Acc: 55.650 |
+Saved best model to experiments/TinyImageNet/pure/ResNet56/0/best.pth
+Epoch 149
+TRAIN | Loss: 2.683 | Acc: 51.35 |
+TEST | Loss: 1.865 | Acc: 55.550 |
+
+Training completed! Best accuracy: 55.65%
+Best model saved to: experiments/TinyImageNet/pure/ResNet56/0/best.pth
+
+Total execution time: 5877 seconds

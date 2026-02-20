@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "epoch": 150,
+  "max_acc": 55.65,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "TinyImageNet",
+    "seed": 0,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  }
+}

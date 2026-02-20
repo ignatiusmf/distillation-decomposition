@@ -1,12 +1,12 @@
 {
   "status": "completed",
   "epoch": 150,
-  "max_acc": 71.56,
+  "max_acc": 70.23,
   "config": {
     "model": "ResNet56",
     "dataset": "Cifar100",
     "seed": 0,
-    "distillation": "attention_transfer",
+    "distillation": "fitnets",
     "teacher_model": "ResNet112",
     "teacher_weights": "experiments/Cifar100/pure/ResNet112/0/best.pth",
     "alpha": 0.5,

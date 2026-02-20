@@ -1,0 +1,17 @@
+INFO: chpc/python/anaconda/3-2024.10.1 loaded
+Traceback (most recent call last):
+  File "/mnt/lustre/users/iferreira/distillation-decomposition/train.py", line 109, in <module>
+    Data = DATASETS[DATASET](BATCH_SIZE, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 126, in SVHN
+    return DataHelper("SVHN", batch_size, data_root, seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 102, in __init__
+    self.trainloader, self.testloader = get_loaders(dataset, batch_size, data_root, seed)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/lustre/users/iferreira/distillation-decomposition/toolbox/data_loader.py", line 59, in get_loaders
+    trainset = ds(root=data_root, split='train', download=True, transform=transform_train)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iferreira/myenv/lib/python3.12/site-packages/torchvision/datasets/svhn.py", line 75, in __init__
+    import scipy.io as sio
+ModuleNotFoundError: No module named 'scipy'
