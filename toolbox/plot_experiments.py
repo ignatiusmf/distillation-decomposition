@@ -24,8 +24,10 @@ def find_experiment_dirs(root: Path):
         yield status_file.parent
 
 
-def load_metrics(exp_dir: Path):
+def load_metrics(exp_dir: Path, root: Path = None):
     """Load training curves from metrics.json or checkpoint.pth."""
+    label = str(exp_dir.relative_to(root)) if root else str(exp_dir)
+
     metrics_path = exp_dir / 'metrics.json'
     if metrics_path.exists():
         with open(metrics_path) as f:
@@ -38,7 +40,7 @@ def load_metrics(exp_dir: Path):
         try:
             ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
         except (EOFError, RuntimeError):
-            print(f"  WARN: corrupted checkpoint, skipping: {exp_dir.name}")
+            print(f"  WARN: corrupted checkpoint: {label}")
             return None
         return {
             'train_loss': ckpt.get('train_loss', []),
@@ -103,18 +105,23 @@ def main():
         return
 
     dirs = list(find_experiment_dirs(root))
-    plotted, skipped = 0, 0
+    plotted = 0
+    skipped_names = []
     for exp_dir in dirs:
-        metrics = load_metrics(exp_dir)
+        metrics = load_metrics(exp_dir, root)
         if metrics:
             if plot_experiment(exp_dir, metrics):
                 plotted += 1
             else:
-                skipped += 1
+                skipped_names.append(str(exp_dir.relative_to(root)))
         else:
-            skipped += 1
+            skipped_names.append(str(exp_dir.relative_to(root)))
 
-    print(f"Plotted {plotted}/{len(dirs)} experiments ({skipped} skipped)")
+    if skipped_names:
+        print(f"Skipped ({len(skipped_names)}):")
+        for name in skipped_names:
+            print(f"  {name}")
+    print(f"Plotted {plotted}/{len(dirs)} experiments ({len(skipped_names)} skipped)")
 
 
 if __name__ == '__main__':

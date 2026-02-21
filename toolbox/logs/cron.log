@@ -1,4 +1,42 @@
 =================================================
-========= Sat 21 Feb 2026 22:24:00 SAST =========
+========= Sat 21 Feb 2026 22:36:00 SAST =========
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Pulling experiments from CHPC...
+receiving incremental file list
+
+sent 168 bytes  received 6,110 bytes  1,793.71 bytes/sec
+total size is 303,401,283  speedup is 48,327.70
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Skipped (14):
+  Cifar10/pure/ResNet112/1
+  Cifar10/pure/ResNet112/2
+  Cifar100/pure/ResNet112/2
+  Cifar100/pure/ResNet56/2
+  Cifar100/factor_transfer/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar100/logit/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar100/attention_transfer/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar100/fitnets/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar100/rkd/alpha_0.75/ResNet112_to_ResNet56/0
+  Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0
+  Cifar100/nst/alpha_0.5/ResNet112_to_ResNet56/0
+  Cifar100/nst/alpha_0.75/ResNet112_to_ResNet56/0
+  Cifar100/nst/alpha_0.95/ResNet112_to_ResNet56/0
+Plotted 24/38 experiments (14 skipped)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,775 bytes  received 52 bytes  406.00 bytes/sec
+total size is 344,429  speedup is 188.52
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Queuing jobs on CHPC...
+EXPERIMENT CHARLIE — 20/312 completed (6.4%)
+  Completed:          20
+  Running:            0
+  Queued this run:    0
+  Pending (not yet queued): 76
+  Waiting on teacher: 216
+==================== Done =======================

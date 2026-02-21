@@ -13,19 +13,21 @@
 
 ## Experiments
 
-- **REMINDER:** When ALL experiment_beta training runs are finished, remind the user to:
-  1. Move `experiments/` into `analysis/experiment_beta/experiments/`
-  2. Create a new blank `experiments/` directory
-  This mirrors what was done for experiment_alpha — archive everything before starting fresh.
-- Current experiment structure: `analysis/experiment_alpha/` (archived), `analysis/experiment_beta/` (active).
+- Current experiment: **charlie** (312 experiments, training in progress on CHPC)
+- Archived: `analysis/experiment_alpha/`, `analysis/experiment_beta/`
+- Analysis design: `analysis/experiment_charlie/analysis_design.md`
 
-## Active Focus: tracker/Plan.md + tracker/Progress.md
+## Active Focus: tracker/
 
-- We are actively working through `tracker/Plan.md` (the reference — do not modify) and `tracker/Progress.md` (the living tracker).
-- At the start of each session, read both files to understand current state.
-- When working on a task from tracker/Plan.md, update tracker/Progress.md with: exploration findings, code changes made, confirmation of fix, and any follow-up notes.
-- Mark tasks in tracker/Progress.md as done only after the fix is verified (not just written).
-- Update the Work Log table at the bottom of tracker/Progress.md with each action taken.
+- `tracker/Plan.md` is the **task index** — read it first each session to understand current state.
+- Task details and progress are in category files:
+  - `tracker/infrastructure.md` — PBS, cron, deployment ([1], [2], [3], [10])
+  - `tracker/training.md` — AMP, plotting, distillation fixes ([4], [5], [11])
+  - `tracker/experiment.md` — Archiving, launching, analysis design ([6], [7], [12])
+  - `tracker/thesis.md` — Thesis writing ([8], [9])
+  - `tracker/worklog.md` — Chronological log, sequencing, outstanding tasks
+- When working on a task, update the relevant category file with progress.
+- Update `tracker/worklog.md` with each action taken.
 
 
 ## Documentation
