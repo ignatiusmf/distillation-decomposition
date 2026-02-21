@@ -14,7 +14,56 @@ limit = 10 if testing else 10 - int(
         text=True
     ).stdout.strip()
 )
-total = 0
+
+
+# ============================================================================
+# EXPERIMENT TRACKER
+# ============================================================================
+
+class ExperimentTracker:
+    def __init__(self, queue_limit):
+        self.queue_limit = queue_limit
+        self.completed = []
+        self.running = []
+        self.queued = []       # submitted this run
+        self.pending = []      # needs queueing but hit limit
+        self.teacher_pending = []
+
+    @property
+    def total(self):
+        return (len(self.completed) + len(self.running) + len(self.queued)
+                + len(self.pending) + len(self.teacher_pending))
+
+    def record(self, name, status):
+        {'completed': self.completed, 'running': self.running,
+         'queued': self.queued, 'pending': self.pending,
+         'teacher_pending': self.teacher_pending}[status].append(name)
+
+    def summary(self):
+        t = self.total
+        c = len(self.completed)
+        pct = (c / t * 100) if t else 0
+        print(f'EXPERIMENT CHARLIE — {c}/{t} completed ({pct:.1f}%)')
+        print(f'  Completed:          {c}')
+        print(f'  Running:            {len(self.running)}')
+        print(f'  Queued this run:    {len(self.queued)}')
+        print(f'  Pending (not yet queued): {len(self.pending)}')
+        print(f'  Waiting on teacher: {len(self.teacher_pending)}')
+        if self.running:
+            print(f'\nCurrently running:')
+            for name in self.running:
+                print(f'  - {name}')
+        if self.queued:
+            print(f'\nQueued this run:')
+            for name in self.queued:
+                print(f'  - {name}')
+
+tracker = ExperimentTracker(limit)
+
+
+# ============================================================================
+# CORE FUNCTIONS
+# ============================================================================
 
 def generate_pbs_script(python_cmd, experiment_name):
     if testing: return
@@ -49,73 +98,64 @@ def generate_pbs_script(python_cmd, experiment_name):
         temp_file.unlink(missing_ok=True)
 
 
-def is_training_complete(dataset, method, model_name, seed, teacher_model=None, alpha=None):
-    """Check if training is already completed for a given configuration."""
-    if method == 'pure':
-        status_path = Path(f'experiments/{dataset}/pure/{model_name}/{seed}/status.json')
-    else:
-        status_path = Path(f'experiments/{dataset}/{method}/alpha_{alpha}/{teacher_model}_to_{model_name}/{seed}/status.json')
-
-    if status_path.exists():
-        with open(status_path, 'r') as f:
-            status = json.load(f)
-            return status.get('status') == 'completed'
-    return False
-
-
 def _is_job_alive(job_id):
     """Check if a PBS job is still running via qstat."""
     try:
         result = subprocess.run(['qstat', job_id], capture_output=True, text=True)
         return result.returncode == 0
     except FileNotFoundError:
-        # qstat not available (e.g. local testing) — assume dead
         return False
 
 
-def should_skip(dataset, method, model_name, seed, teacher_model=None, alpha=None):
-    """Returns True if experiment should be skipped (completed or actively running).
-    Returns False if experiment should be (re-)queued."""
+def get_experiment_status(dataset, method, model_name, seed, teacher_model=None, alpha=None):
+    """Returns 'completed', 'running', or 'pending'."""
     if method == 'pure':
         status_path = Path(f'experiments/{dataset}/pure/{model_name}/{seed}/status.json')
     else:
         status_path = Path(f'experiments/{dataset}/{method}/alpha_{alpha}/{teacher_model}_to_{model_name}/{seed}/status.json')
 
     if not status_path.exists():
-        return False  # Never started → run it
+        return 'pending'
 
     with open(status_path) as f:
         status = json.load(f)
 
     if status.get('status') == 'completed':
-        return True  # Done → skip
+        return 'completed'
 
     if status.get('status') == 'in_progress':
         job_id = status.get('pbs_job_id')
         if job_id and _is_job_alive(job_id):
-            return True  # Still running → skip
-        # Dead job or no job ID → safe to re-queue
-        return False
+            return 'running'
 
-    return False
+    return 'pending'
+
+
+def is_training_complete(dataset, method, model_name, seed, teacher_model=None, alpha=None):
+    """Check if training is already completed for a given configuration."""
+    return get_experiment_status(dataset, method, model_name, seed, teacher_model, alpha) == 'completed'
 
 
 def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model=None, alpha=None):
-    """
-    Check if experiment should be skipped (completed or actively running).
-    Returns True if we should skip, False if we should run.
-    """
-    global total, limit
-    if total == limit:
-        print('Queue limit reached, exiting')
-        exit()
-
+    """Check experiment status, record it, and return True to skip or False to queue."""
     method = 'pure' if distillation == 'none' else distillation
-    if should_skip(dataset, method, model, seed, teacher_model, alpha):
+    name = get_experiment_name(dataset, model, seed, distillation, teacher_model, alpha)
+    status = get_experiment_status(dataset, method, model, seed, teacher_model, alpha)
+
+    if status == 'completed':
+        tracker.record(name, 'completed')
+        return True
+    if status == 'running':
+        tracker.record(name, 'running')
         return True
 
-    total += 1
+    # Pending — queue it if we have capacity, otherwise mark as pending
+    if len(tracker.queued) >= tracker.queue_limit:
+        tracker.record(name, 'pending')
+        return True  # skip queueing but still counted
+    tracker.record(name, 'queued')
     return False
+
 
 def generate_python_cmd(model, dataset, seed, distillation='none',
                         teacher_model=None, teacher_weights=None, alpha=0.5, temperature=4.0):
@@ -161,16 +201,11 @@ teacher_model = 'ResNet112'
 student_models = ['ResNet56']
 distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
 
-skipped = 0
-teacher_pending = 0
-
 for run in range(runs):
     for dataset in datasets:
         # --- Pure training (teacher + student baselines) ---
         for model in [teacher_model] + student_models:
-            if check_path_and_skip(model, dataset, run):
-                skipped += 1
-                continue
+            if check_path_and_skip(model, dataset, run): continue
             experiment_name = get_experiment_name(dataset, model, run)
             python_cmd = generate_python_cmd(model, dataset, run)
             generate_pbs_script(python_cmd, experiment_name)
@@ -180,18 +215,17 @@ for run in range(runs):
             for method in distillation_methods:
                 for alpha in alphas:
                     # Verify teacher is fully trained before queuing any KD student
+                    name = get_experiment_name(dataset, student_model, run,
+                                               distillation=method, teacher_model=teacher_model,
+                                               alpha=alpha)
                     if not is_training_complete(dataset, 'pure', teacher_model, run):
-                        teacher_pending += 1
+                        tracker.record(name, 'teacher_pending')
                         continue
                     if check_path_and_skip(student_model, dataset, run,
                                            distillation=method, teacher_model=teacher_model,
-                                           alpha=alpha):
-                        skipped += 1
-                        continue
+                                           alpha=alpha): continue
                     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
-                    experiment_name = get_experiment_name(dataset, student_model, run,
-                                                         distillation=method, teacher_model=teacher_model,
-                                                         alpha=alpha)
+                    experiment_name = name
                     python_cmd = generate_python_cmd(
                         student_model, dataset, run,
                         distillation=method, teacher_model=teacher_model,
@@ -199,4 +233,4 @@ for run in range(runs):
                     )
                     generate_pbs_script(python_cmd, experiment_name)
 
-print(f'\nSkipped {skipped} (completed/running), {teacher_pending} waiting on teacher, {total} queued')
+tracker.summary()

@@ -1,0 +1,17 @@
+{
+  "status": "in_progress",
+  "epoch": 131,
+  "max_acc": 69.04,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "Cifar100",
+    "seed": 0,
+    "distillation": "attention_transfer",
+    "teacher_model": "ResNet112",
+    "teacher_weights": "experiments/Cifar100/pure/ResNet112/0/best.pth",
+    "alpha": 0.75,
+    "temperature": 4.0,
+    "force_restart": false
+  },
+  "pbs_job_id": "7000979.sched01"
+}

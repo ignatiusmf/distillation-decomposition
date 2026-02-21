@@ -1,7 +1,7 @@
 {
   "status": "in_progress",
-  "epoch": 43,
-  "max_acc": 29.55,
+  "epoch": 50,
+  "max_acc": 30.74,
   "config": {
     "model": "ResNet56",
     "dataset": "TinyImageNet",

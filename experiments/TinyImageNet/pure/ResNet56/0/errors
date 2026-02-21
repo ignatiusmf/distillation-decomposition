@@ -1,6 +1,2 @@
 INFO: chpc/python/anaconda/3-2024.10.1 loaded
-Traceback (most recent call last):
-  File "/mnt/lustre/users/iferreira/distillation-decomposition/train.py", line 95, in <module>
-    if status['status'] == 'completed' and not args.force_restart:
-       ~~~~~~^^^^^^^^^^
-KeyError: 'status'
+=>> PBS: job killed: walltime 3621 exceeded limit 3600

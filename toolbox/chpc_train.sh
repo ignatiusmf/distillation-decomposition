@@ -28,9 +28,11 @@ case "$1" in
     echo "Cron removed"
     ;;
   cron)
-    echo "=== $(date) ==="
+    echo "================================================="
+    echo "========= $(date) ========="
 
     # 1. Pull experiment results from CHPC (exclude .png from --delete so local plots survive)
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "Pulling experiments from CHPC..."
     rsync -avz --delete --exclude='*.png' \
       -e "ssh $SSH_OPTS" \
@@ -39,11 +41,13 @@ case "$1" in
 
     # 2. Regenerate plots locally
     if [ -f "$SCRIPT_DIR/plot_experiments.py" ]; then
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
       echo "Regenerating plots..."
       "$VENV_PYTHON" "$SCRIPT_DIR/plot_experiments.py"
     fi
 
     # 3. Push code to CHPC
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "Pushing code to CHPC..."
     rsync -avz --delete \
       -e "ssh $SSH_OPTS" \
@@ -52,10 +56,11 @@ case "$1" in
       "$PROJECT_DIR/" "$REMOTE:$REMOTE_DIR/"
 
     # 4. Queue new/resumed jobs on CHPC
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "Queuing jobs on CHPC..."
     ssh $SSH_OPTS "$REMOTE" "cd $REMOTE_DIR && python runner.py"
 
-    echo "=== Done ==="
+    echo "==================== Done ======================="
     ;;
   *)
     echo "Usage: $0 on|off|cron"

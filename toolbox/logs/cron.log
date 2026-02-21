@@ -1,0 +1,492 @@
+=== Sat 21 Feb 2026 17:10:00 SAST ===
+Pulling experiments from CHPC...
+receiving incremental file list
+experiments/Cifar100/pure/ResNet112/1/best.pth
+experiments/Cifar100/pure/ResNet112/1/checkpoint.pth
+experiments/Cifar100/pure/ResNet112/1/status.json
+experiments/Cifar100/pure/ResNet56/1/best.pth
+experiments/Cifar100/pure/ResNet56/1/checkpoint.pth
+experiments/Cifar100/pure/ResNet56/1/status.json
+experiments/TinyImageNet/pure/ResNet112/0/checkpoint.pth
+experiments/TinyImageNet/pure/ResNet112/0/status.json
+experiments/TinyImageNet/pure/ResNet56/0/best.pth
+experiments/TinyImageNet/pure/ResNet56/0/checkpoint.pth
+experiments/TinyImageNet/pure/ResNet56/0/status.json
+
+sent 116,685 bytes  received 52,254,531 bytes  2,992,640.91 bytes/sec
+total size is 160,234,627  speedup is 3.06
+Regenerating plots...
+Generated plots for 10 experiments
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,738 bytes  received 173 bytes  764.40 bytes/sec
+total size is 428,942  speedup is 224.46
+Queuing jobs on CHPC...
+Queue limit reached, exiting
+=== Done ===
+=== Sat 21 Feb 2026 17:20:00 SAST ===
+Pulling experiments from CHPC...
+receiving incremental file list
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/pure/ResNet112/1/best.pth
+experiments/Cifar100/pure/ResNet112/1/checkpoint.pth
+experiments/Cifar100/pure/ResNet112/1/status.json
+experiments/Cifar100/pure/ResNet56/1/
+experiments/Cifar100/pure/ResNet56/1/best.pth
+experiments/Cifar100/pure/ResNet56/1/checkpoint.pth
+experiments/Cifar100/pure/ResNet56/1/errors
+experiments/Cifar100/pure/ResNet56/1/logs
+experiments/Cifar100/pure/ResNet56/1/metrics.json
+experiments/Cifar100/pure/ResNet56/1/status.json
+experiments/TinyImageNet/pure/ResNet112/0/checkpoint.pth
+experiments/TinyImageNet/pure/ResNet112/0/errors
+experiments/TinyImageNet/pure/ResNet112/0/logs
+experiments/TinyImageNet/pure/ResNet112/0/status.json
+experiments/TinyImageNet/pure/ResNet56/0/checkpoint.pth
+experiments/TinyImageNet/pure/ResNet56/0/errors
+experiments/TinyImageNet/pure/ResNet56/0/logs
+experiments/TinyImageNet/pure/ResNet56/0/status.json
+
+sent 105,660 bytes  received 71,663,973 bytes  2,814,495.41 bytes/sec
+total size is 192,166,687  speedup is 2.68
+Regenerating plots...
+Traceback (most recent call last):
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 111, in <module>
+    main()
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 102, in main
+    metrics = load_metrics(exp_dir)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 38, in load_metrics
+    ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1573, in load
+    return _legacy_load(
+           ^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1822, in _legacy_load
+    magic_number = pickle_module.load(f, **pickle_load_args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+EOFError: Ran out of input
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 2,144 bytes  received 53 bytes  878.80 bytes/sec
+total size is 432,276  speedup is 196.76
+Queuing jobs on CHPC...
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation factor_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7000817.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation factor_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7000818.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation factor_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.75
+Job submitted: 7000819.sched01
+Queue limit reached, exiting
+=== Done ===
+=== Sat 21 Feb 2026 17:30:00 SAST ===
+Pulling experiments from CHPC...
+receiving incremental file list
+./
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/pure/ResNet112/1/
+experiments/Cifar100/pure/ResNet112/1/best.pth
+experiments/Cifar100/pure/ResNet112/1/checkpoint.pth
+experiments/Cifar100/pure/ResNet112/1/errors
+experiments/Cifar100/pure/ResNet112/1/logs
+experiments/Cifar100/pure/ResNet112/1/metrics.json
+experiments/Cifar100/pure/ResNet112/1/status.json
+
+sent 105,378 bytes  received 48,716,879 bytes  2,789,843.26 bytes/sec
+total size is 192,195,863  speedup is 3.94
+Regenerating plots...
+Traceback (most recent call last):
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 111, in <module>
+    main()
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 102, in main
+    metrics = load_metrics(exp_dir)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 38, in load_metrics
+    ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1507, in load
+    with _open_zipfile_reader(opened_file) as opened_zipfile:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 780, in __init__
+    super().__init__(torch._C.PyTorchFileReader(name_or_buffer))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: PytorchStreamReader failed reading zip archive: failed finding central directory
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,854 bytes  received 83 bytes  553.43 bytes/sec
+total size is 435,927  speedup is 225.05
+Queuing jobs on CHPC...
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation factor_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7000840.sched01
+Queue limit reached, exiting
+=== Done ===
+=== Sat 21 Feb 2026 18:10:00 SAST ===
+Pulling experiments from CHPC...
+receiving incremental file list
+./
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/paraphraser.pth
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/paraphraser.pth
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/paraphraser.pth
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/logit/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+
+sent 82,945 bytes  received 58,986,882 bytes  2,747,433.81 bytes/sec
+total size is 224,978,334  speedup is 3.81
+Regenerating plots...
+Generated plots for 16 experiments
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,724 bytes  received 113 bytes  524.86 bytes/sec
+total size is 439,849  speedup is 239.44
+Queuing jobs on CHPC...
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation attention_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7000977.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation attention_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7000978.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation attention_transfer --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.75
+Job submitted: 7000979.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7000980.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7000981.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.75
+Job submitted: 7000982.sched01
+Queue limit reached, exiting
+=== Done ===
+===========================
+========= Sat 21 Feb 2026 18:50:00 SAST =========
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pulling experiments from CHPC...
+receiving incremental file list
+./
+experiments/Cifar100/
+experiments/Cifar100/attention_transfer/
+experiments/Cifar100/attention_transfer/alpha_0.25/
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.5/
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.75/
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/factor_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/factor_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/factor_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/
+experiments/Cifar100/fitnets/alpha_0.25/
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.5/
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.75/
+experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/
+experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/
+experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/logit/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/logit/alpha_0.75/ResNet112_to_ResNet56/0/
+
+sent 83,601 bytes  received 68,469,080 bytes  1,651,871.83 bytes/sec
+total size is 267,608,524  speedup is 3.90
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Traceback (most recent call last):
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 111, in <module>
+    main()
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 102, in main
+    metrics = load_metrics(exp_dir)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 38, in load_metrics
+    ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1549, in load
+    return _load(
+           ^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1930, in _load
+    byteorderdata = zip_file.get_record(byteordername)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: PytorchStreamReader failed reading file byteorder: invalid header or archive is corrupted
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+toolbox/chpc_train.sh
+toolbox/logs/cron.log
+
+sent 2,464 bytes  received 180 bytes  755.43 bytes/sec
+total size is 447,362  speedup is 169.20
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Queuing jobs on CHPC...
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7001071.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.75
+Job submitted: 7001072.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7001073.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7001074.sched01
+Queue limit reached, exiting
+========= Done =========
+=================================================
+========= Sat 21 Feb 2026 19:00:00 SAST =========
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pulling experiments from CHPC...
+receiving incremental file list
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+
+sent 109,831 bytes  received 38,794,234 bytes  2,509,939.68 bytes/sec
+total size is 267,613,783  speedup is 6.88
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Generated plots for 20 experiments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,555 bytes  received 215 bytes  505.71 bytes/sec
+total size is 450,156  speedup is 254.33
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Queuing jobs on CHPC...
+Queue limit reached, exiting
+==================== Done =======================
+=================================================
+========= Sat 21 Feb 2026 19:10:00 SAST =========
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pulling experiments from CHPC...
+receiving incremental file list
+./
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+
+sent 109,844 bytes  received 38,794,849 bytes  2,509,980.19 bytes/sec
+total size is 267,618,904  speedup is 6.88
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Generated plots for 20 experiments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+runner.py
+toolbox/logs/cron.log
+
+sent 3,604 bytes  received 328 bytes  873.78 bytes/sec
+total size is 453,448  speedup is 115.32
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Queuing jobs on CHPC...
+
+==================================================
+EXPERIMENT CHARLIE — 12/240 completed (5.0%)
+==================================================
+  Completed:          12
+  Running:            4
+  Queued this run:    0
+  Pending (not yet queued): 62
+  Waiting on teacher: 162
+
+Currently running:
+  - Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0
+  - Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0
+  - Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0
+  - Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0
+==================== Done =======================
+=================================================
+========= Sat 21 Feb 2026 19:20:01 SAST =========
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pulling experiments from CHPC...
+receiving incremental file list
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/attention_transfer/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/errors
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/logs
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/metrics.json
+experiments/Cifar100/attention_transfer/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+
+sent 110,064 bytes  received 42,051,847 bytes  3,372,952.88 bytes/sec
+total size is 278,318,334  speedup is 6.60
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Traceback (most recent call last):
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 111, in <module>
+    main()
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 102, in main
+    metrics = load_metrics(exp_dir)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/toolbox/plot_experiments.py", line 38, in load_metrics
+    ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1573, in load
+    return _legacy_load(
+           ^^^^^^^^^^^^^
+  File "/home/ignatius/Lab/studies/repos/distillation-decomposition/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1822, in _legacy_load
+    magic_number = pickle_module.load(f, **pickle_load_args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+EOFError: Ran out of input
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+
+sent 1,727 bytes  received 251 bytes  565.14 bytes/sec
+total size is 457,847  speedup is 231.47
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Queuing jobs on CHPC...
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
+Job submitted: 7001139.sched01
+python train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.5
+Job submitted: 7001140.sched01
+EXPERIMENT CHARLIE — 14/240 completed (5.8%)
+  Completed:          14
+  Running:            4
+  Queued this run:    2
+  Pending (not yet queued): 58
+  Waiting on teacher: 162
+
+Currently running:
+  - Cifar100/attention_transfer/alpha_0.75/ResNet112_to_ResNet56/0
+  - Cifar100/fitnets/alpha_0.25/ResNet112_to_ResNet56/0
+  - Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0
+  - Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0
+
+Queued this run:
+  - Cifar100/rkd/alpha_0.25/ResNet112_to_ResNet56/0
+  - Cifar100/rkd/alpha_0.5/ResNet112_to_ResNet56/0
+==================== Done =======================

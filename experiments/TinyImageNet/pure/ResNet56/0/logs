@@ -1,5 +1,6 @@
-Sat Feb 21 12:03:05 SAST 2026
+Sat Feb 21 16:23:13 SAST 2026
 Running python train.py --model ResNet56 --dataset TinyImageNet --seed 0
 
-
-Total execution time: 4 seconds
+{'model': 'ResNet56', 'dataset': 'TinyImageNet', 'seed': 0, 'distillation': 'none', 'teacher_model': None, 'teacher_weights': None, 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Epoch 0
+TRAIN | Loss: 5.106 | Acc: 2.04 |

@@ -1,7 +1,7 @@
 {
-  "status": "in_progress",
-  "epoch": 89,
-  "max_acc": 57.23,
+  "status": "completed",
+  "epoch": 150,
+  "max_acc": 72.71,
   "config": {
     "model": "ResNet112",
     "dataset": "Cifar100",

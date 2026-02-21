@@ -1,6 +1,6 @@
 {
   "status": "in_progress",
-  "epoch": 22,
+  "epoch": 25,
   "max_acc": 27.01,
   "config": {
     "model": "ResNet112",

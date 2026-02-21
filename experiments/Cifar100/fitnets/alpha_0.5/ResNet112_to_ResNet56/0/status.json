@@ -1,0 +1,17 @@
+{
+  "status": "in_progress",
+  "epoch": 3,
+  "max_acc": 23.95,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "Cifar100",
+    "seed": 0,
+    "distillation": "fitnets",
+    "teacher_model": "ResNet112",
+    "teacher_weights": "experiments/Cifar100/pure/ResNet112/0/best.pth",
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  },
+  "pbs_job_id": "7001071.sched01"
+}
