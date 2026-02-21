@@ -87,7 +87,8 @@ def plot_experiment(exp_dir: Path, metrics: dict):
 
 def main():
     parser = argparse.ArgumentParser(description='Generate plots for all experiments')
-    parser.add_argument('--experiments_dir', type=str, default='experiments',
+    default_dir = Path(__file__).resolve().parent.parent / 'experiments'
+    parser.add_argument('--experiments_dir', type=str, default=str(default_dir),
                         help='Root experiments directory')
     args = parser.parse_args()
 

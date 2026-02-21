@@ -34,10 +34,10 @@ case "$1" in
       --include='experiments/***' --exclude='*' \
       "$REMOTE:$REMOTE_DIR/" "$PROJECT_DIR/"
 
-    # 2. Regenerate plots locally (if plot_experiments.py exists)
-    if [ -f "$PROJECT_DIR/plot_experiments.py" ]; then
+    # 2. Regenerate plots locally
+    if [ -f "$SCRIPT_DIR/plot_experiments.py" ]; then
       echo "Regenerating plots..."
-      python "$PROJECT_DIR/plot_experiments.py"
+      python "$SCRIPT_DIR/plot_experiments.py"
     fi
 
     # 3. Push code to CHPC

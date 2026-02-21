@@ -772,3 +772,7 @@ The following Plan.md items are **not yet implemented** and require future work:
 - **[8] Add CHPC cluster details to methodology chapter (Ch6)** — Thesis writing task. Document cluster specs, PBS config, training times, reproducibility settings. Can do anytime.
 - **[9] Generate weekly progress summary from git history** — Utility script for supervisor updates. Can do anytime.
 - **[12] Design charlie analysis suite** — Create `analysis/experiment_charlie/extract.py` and `analyze.py` with auto-discovery of experiment dirs, all 9 existing metrics scaled to ~240 models, plus 3 new alpha-sweep analyses (alpha sweep per metric, method x alpha heatmap, accuracy vs alignment scatter). Gates charlie launch — should be done before training starts producing data.
+
+Notes from user:
+1. plot_experiments.py should be in toolbox/ 
+2. tools.py should be in toolbox/ with in appropriate name

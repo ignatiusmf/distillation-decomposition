@@ -86,13 +86,16 @@ def load_status():
     return {'status': 'not_started', 'epoch': 0, 'max_acc': 0.0}
 
 def save_status(status_dict):
-    """Save training status to file."""
+    """Save training status to file, preserving pbs_job_id if present."""
+    existing = load_status()
+    if 'pbs_job_id' in existing:
+        status_dict.setdefault('pbs_job_id', existing['pbs_job_id'])
     with open(status_path, 'w') as f:
         json.dump(status_dict, f, indent=2)
 
 # Check if training is already complete
 status = load_status()
-if status['status'] == 'completed' and not args.force_restart:
+if status.get('status') == 'completed' and not args.force_restart:
     print(f"Training already completed for {experiment_dir}")
     print(f"  Best accuracy: {status['max_acc']:.2f}%")
     print(f"  Use --force_restart to retrain from scratch")
