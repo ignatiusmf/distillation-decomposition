@@ -195,7 +195,7 @@ def get_experiment_name(dataset, model, seed, distillation='none', teacher_model
 # ============================================================================
 
 runs = 3
-alphas = [0.25, 0.5, 0.75]
+alphas = [0.25, 0.5, 0.75, 0.95]
 datasets = ['Cifar100', 'Cifar10', 'SVHN', 'TinyImageNet']
 teacher_model = 'ResNet112'
 student_models = ['ResNet56']
