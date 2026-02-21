@@ -1,3 +1,17 @@
 {
+  "status": "in_progress",
+  "epoch": 22,
+  "max_acc": 27.01,
+  "config": {
+    "model": "ResNet112",
+    "dataset": "TinyImageNet",
+    "seed": 0,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  },
   "pbs_job_id": "7000523.sched01"
 }

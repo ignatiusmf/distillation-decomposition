@@ -776,3 +776,5 @@ The following Plan.md items are **not yet implemented** and require future work:
 Notes from user:
 1. plot_experiments.py should be in toolbox/ 
 2. tools.py should be in toolbox/ with in appropriate name
+
+NB: Something after experiment charlie. The train.py and runner.py need to be moved to toolbox/. Correct all other pathing logic so it doesn't break.

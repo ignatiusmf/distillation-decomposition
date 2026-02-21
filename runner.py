@@ -161,11 +161,16 @@ teacher_model = 'ResNet112'
 student_models = ['ResNet56']
 distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
 
+skipped = 0
+teacher_pending = 0
+
 for run in range(runs):
     for dataset in datasets:
         # --- Pure training (teacher + student baselines) ---
         for model in [teacher_model] + student_models:
-            if check_path_and_skip(model, dataset, run): continue
+            if check_path_and_skip(model, dataset, run):
+                skipped += 1
+                continue
             experiment_name = get_experiment_name(dataset, model, run)
             python_cmd = generate_python_cmd(model, dataset, run)
             generate_pbs_script(python_cmd, experiment_name)
@@ -176,11 +181,13 @@ for run in range(runs):
                 for alpha in alphas:
                     # Verify teacher is fully trained before queuing any KD student
                     if not is_training_complete(dataset, 'pure', teacher_model, run):
-                        print(f"Teacher {teacher_model} seed {run} not complete for {dataset}, skipping KD")
+                        teacher_pending += 1
                         continue
                     if check_path_and_skip(student_model, dataset, run,
                                            distillation=method, teacher_model=teacher_model,
-                                           alpha=alpha): continue
+                                           alpha=alpha):
+                        skipped += 1
+                        continue
                     teacher_weights = get_teacher_weights_path(dataset, teacher_model, run)
                     experiment_name = get_experiment_name(dataset, student_model, run,
                                                          distillation=method, teacher_model=teacher_model,
@@ -192,4 +199,4 @@ for run in range(runs):
                     )
                     generate_pbs_script(python_cmd, experiment_name)
 
-print('All experiments are finished / queued')
+print(f'\nSkipped {skipped} (completed/running), {teacher_pending} waiting on teacher, {total} queued')

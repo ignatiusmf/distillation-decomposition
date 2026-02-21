@@ -1,3 +1,17 @@
 {
+  "status": "in_progress",
+  "epoch": 0,
+  "max_acc": 19.52980946527351,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "SVHN",
+    "seed": 0,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  },
   "pbs_job_id": "7000522.sched01"
 }

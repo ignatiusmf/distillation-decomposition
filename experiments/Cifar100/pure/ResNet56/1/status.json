@@ -1,3 +1,17 @@
 {
+  "status": "in_progress",
+  "epoch": 108,
+  "max_acc": 60.99,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "Cifar100",
+    "seed": 1,
+    "distillation": "none",
+    "teacher_model": null,
+    "teacher_weights": null,
+    "alpha": 0.5,
+    "temperature": 4.0,
+    "force_restart": false
+  },
   "pbs_job_id": "7000526.sched01"
 }

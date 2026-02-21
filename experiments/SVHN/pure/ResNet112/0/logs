@@ -1,5 +1,6 @@
-Sat Feb 21 12:02:10 SAST 2026
+Sat Feb 21 16:18:06 SAST 2026
 Running python train.py --model ResNet112 --dataset SVHN --seed 0
 
-
-Total execution time: 5 seconds
+{'model': 'ResNet112', 'dataset': 'SVHN', 'seed': 0, 'distillation': 'none', 'teacher_model': None, 'teacher_weights': None, 'alpha': 0.5, 'temperature': 4.0, 'force_restart': False} seed=0
+Epoch 0
+TRAIN | Loss: 2.301 | Acc: 18.58 |
