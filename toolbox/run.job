@@ -19,6 +19,7 @@ echo -e 'Running {python_cmd}\n'
 start_time=$(date +%s)
 
 cd /mnt/lustre/users/iferreira/distillation-decomposition
+export PYTHONPATH="$PWD:$PYTHONPATH"
 {python_cmd}
 
 echo -e "\nTotal execution time: $(( $(date +%s) - start_time)) seconds"

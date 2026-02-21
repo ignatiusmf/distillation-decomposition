@@ -1,4 +1,4 @@
-Sat Feb 21 21:53:31 SAST 2026
+Sat Feb 21 23:09:31 SAST 2026
 Running python toolbox/train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation fitnets --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.95
 
 
