@@ -28,6 +28,7 @@
   - `tracker/worklog.md` — Chronological log, sequencing, outstanding tasks
 - When working on a task, update the relevant category file with progress.
 - Update `tracker/worklog.md` with each action taken.
+- **After every fix or change**, add an entry to the appropriate tracker category file documenting the problem and the fix. Every change should be traceable in tracker/.
 
 
 ## Documentation

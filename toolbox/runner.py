@@ -24,39 +24,40 @@ class ExperimentTracker:
     def __init__(self, queue_limit):
         self.queue_limit = queue_limit
         self.completed = []
-        self.running = []
-        self.queued = []       # submitted this run
-        self.pending = []      # needs queueing but hit limit
-        self.teacher_pending = []
+        self.running = []       # list of (name, job_info)
+        self.queued = []        # submitted this run
+        self.pending = []       # not yet queued (hit limit or waiting on teacher)
 
     @property
     def total(self):
         return (len(self.completed) + len(self.running) + len(self.queued)
-                + len(self.pending) + len(self.teacher_pending))
+                + len(self.pending))
 
-    def record(self, name, status):
-        {'completed': self.completed, 'running': self.running,
-         'queued': self.queued, 'pending': self.pending,
-         'teacher_pending': self.teacher_pending}[status].append(name)
+    def record(self, name, status, job_info=None):
+        if status == 'running':
+            self.running.append((name, job_info))
+        else:
+            {'completed': self.completed,
+             'queued': self.queued, 'pending': self.pending}[status].append(name)
 
     def summary(self):
         t = self.total
         c = len(self.completed)
         pct = (c / t * 100) if t else 0
         print(f'EXPERIMENT CHARLIE — {c}/{t} completed ({pct:.1f}%)')
-        print(f'  Completed:          {c}')
-        print(f'  Running:            {len(self.running)}')
-        print(f'  Queued this run:    {len(self.queued)}')
-        print(f'  Pending (not yet queued): {len(self.pending)}')
-        print(f'  Waiting on teacher: {len(self.teacher_pending)}')
+        print(f'  Finished:           {c}')
+        print(f'  Not started:        {len(self.pending)}')
+        print(f'  Already on PBS:     {len(self.running)}')
         if self.running:
-            print(f'\nCurrently running:')
-            for name in self.running:
-                print(f'  - {name}')
+            for name, info in self.running:
+                state = info.get('state', '?') if info else '?'
+                elapsed = info.get('elapsed', '') if info else ''
+                tag = f'[{state}]' if not elapsed else f'[{state} {elapsed}]'
+                print(f'    - {tag} {name}')
+        print(f'  Queued this run:    {len(self.queued)}')
         if self.queued:
-            print(f'\nQueued this run:')
             for name in self.queued:
-                print(f'  - {name}')
+                print(f'    - {name}')
 
 tracker = ExperimentTracker(limit)
 
@@ -98,55 +99,82 @@ def generate_pbs_script(python_cmd, experiment_name):
         temp_file.unlink(missing_ok=True)
 
 
-def _is_job_alive(job_id):
-    """Check if a PBS job is still running via qstat."""
+def _get_job_info(job_id):
+    """Get PBS job info. Returns dict with 'alive', 'state', 'elapsed' or None."""
     try:
-        result = subprocess.run(['qstat', job_id], capture_output=True, text=True)
-        return result.returncode == 0
+        result = subprocess.run(['qstat', '-f', job_id], capture_output=True, text=True)
+        if result.returncode != 0:
+            return None
+        info = {'alive': True, 'state': '?', 'elapsed': ''}
+        for line in result.stdout.splitlines():
+            line = line.strip()
+            if line.startswith('job_state ='):
+                info['state'] = line.split('=')[1].strip()
+            elif line.startswith('stime ='):
+                info['elapsed'] = _elapsed_since(line.split('=', 1)[1].strip())
+            elif line.startswith('resources_used.walltime ='):
+                info['elapsed'] = line.split('=')[1].strip()
+        return info
     except FileNotFoundError:
-        return False
+        return None
+
+
+def _elapsed_since(time_str):
+    """Parse PBS time string and return elapsed duration."""
+    from datetime import datetime
+    try:
+        start = datetime.strptime(time_str, '%a %b %d %H:%M:%S %Y')
+        delta = datetime.now() - start
+        hours, remainder = divmod(int(delta.total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f'{hours}:{minutes:02d}:{seconds:02d}'
+    except (ValueError, TypeError):
+        return time_str
 
 
 def get_experiment_status(dataset, method, model_name, seed, teacher_model=None, alpha=None):
-    """Returns 'completed', 'running', or 'pending'."""
+    """Returns ('completed', None), ('running', job_info), or ('pending', None)."""
     if method == 'pure':
         status_path = Path(f'experiments/{dataset}/pure/{model_name}/{seed}/status.json')
     else:
         status_path = Path(f'experiments/{dataset}/{method}/alpha_{alpha}/{teacher_model}_to_{model_name}/{seed}/status.json')
 
     if not status_path.exists():
-        return 'pending'
+        return 'pending', None
 
     with open(status_path) as f:
         status = json.load(f)
 
     if status.get('status') == 'completed':
-        return 'completed'
+        return 'completed', None
 
-    if status.get('status') == 'in_progress':
-        job_id = status.get('pbs_job_id')
-        if job_id and _is_job_alive(job_id):
-            return 'running'
+    # Check if there's a live PBS job (queued or running on the cluster)
+    job_id = status.get('pbs_job_id')
+    if job_id:
+        job_info = _get_job_info(job_id)
+        if job_info:
+            return 'running', job_info
 
-    return 'pending'
+    return 'pending', None
 
 
 def is_training_complete(dataset, method, model_name, seed, teacher_model=None, alpha=None):
     """Check if training is already completed for a given configuration."""
-    return get_experiment_status(dataset, method, model_name, seed, teacher_model, alpha) == 'completed'
+    status, _ = get_experiment_status(dataset, method, model_name, seed, teacher_model, alpha)
+    return status == 'completed'
 
 
 def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model=None, alpha=None):
     """Check experiment status, record it, and return True to skip or False to queue."""
     method = 'pure' if distillation == 'none' else distillation
     name = get_experiment_name(dataset, model, seed, distillation, teacher_model, alpha)
-    status = get_experiment_status(dataset, method, model, seed, teacher_model, alpha)
+    status, job_info = get_experiment_status(dataset, method, model, seed, teacher_model, alpha)
 
     if status == 'completed':
         tracker.record(name, 'completed')
         return True
     if status == 'running':
-        tracker.record(name, 'running')
+        tracker.record(name, 'running', job_info)
         return True
 
     # Pending — queue it if we have capacity, otherwise mark as pending
@@ -219,7 +247,7 @@ for run in range(runs):
                                                distillation=method, teacher_model=teacher_model,
                                                alpha=alpha)
                     if not is_training_complete(dataset, 'pure', teacher_model, run):
-                        tracker.record(name, 'teacher_pending')
+                        tracker.record(name, 'pending')
                         continue
                     if check_path_and_skip(student_model, dataset, run,
                                            distillation=method, teacher_model=teacher_model,
