@@ -1,41 +1,4 @@
 =================================================
-========= Sat 21 Feb 2026 19:40:00 SAST =========
+========= Sat 21 Feb 2026 22:24:00 SAST =========
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Pulling experiments from CHPC...
-receiving incremental file list
-experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/best.pth
-experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
-rsync: read errors mapping "/home/iferreira/lustre/distillation-decomposition/experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth": No data available (61)
-WARNING: experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth failed verification -- update discarded (will try again).
-experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/status.json
-experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
-experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
-experiments/Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/status.json
-experiments/Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
-
-sent 107,108 bytes  received 25,851,958 bytes  1,790,280.41 bytes/sec
-total size is 289,017,378  speedup is 11.13
-rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1852) [generator=3.4.1]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Regenerating plots...
-Plotted 22/30 experiments (8 skipped)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Pushing code to CHPC...
-sending incremental file list
-toolbox/logs/cron.log
-
-sent 1,943 bytes  received 53 bytes  798.40 bytes/sec
-total size is 434,907  speedup is 217.89
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Queuing jobs on CHPC...
-EXPERIMENT CHARLIE — 16/312 completed (5.1%)
-  Completed:          16
-  Running:            2
-  Queued this run:    0
-  Pending (not yet queued): 78
-  Waiting on teacher: 216
-
-Currently running:
-  - Cifar100/fitnets/alpha_0.5/ResNet112_to_ResNet56/0
-  - Cifar100/fitnets/alpha_0.75/ResNet112_to_ResNet56/0
-==================== Done =======================

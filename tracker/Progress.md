@@ -785,10 +785,241 @@ The following Plan.md items are **not yet implemented** and require future work:
 
 - **[8] Add CHPC cluster details to methodology chapter (Ch6)** — Thesis writing task. Document cluster specs, PBS config, training times, reproducibility settings. Can do anytime.
 - **[9] Generate weekly progress summary from git history** — Utility script for supervisor updates. Can do anytime.
-- **[12] Design charlie analysis suite** — Create `analysis/experiment_charlie/extract.py` and `analyze.py` with auto-discovery of experiment dirs, all 9 existing metrics scaled to ~240 models, plus 3 new alpha-sweep analyses (alpha sweep per metric, method x alpha heatmap, accuracy vs alignment scatter). Gates charlie launch — should be done before training starts producing data.
+- **[12] Design charlie analysis suite** — See detailed design notes below.
 
-Notes from user:
+---
+
+## [12] Charlie Analysis Suite — Design Reflection
+
+Also add that I want you to basically generate in a figure the current status of experiment charlie (this is not a task for now, add it to the list of analysis suite for chrlie, it will just be to let my supervisors and myself visualize what experiment charlie is about, stuff every statistic in there you can
+
+### What we have (alpha baseline)
+
+The alpha analysis pipeline was small: 4 models (teacher, pure student, logit KD, factor transfer) across 2 datasets, producing 9 figures. The code is entirely hardcoded — `MODEL_KEYS`, `DISPLAY`, `SHORT`, `COLORS` are all manual dicts of 4 entries. Every analysis function assumes a fixed teacher at index 0 and iterates 3 students. This worked because the space was tiny.
+
+Charlie is fundamentally different: **6 methods x 4 alphas x 4 datasets x 3 seeds = 288 KD models + 24 pure baselines = 312 experiments**. The alpha suite cannot scale to this by just adding entries to the dicts. More importantly, the new dimension (alpha) changes *what questions the analysis should ask*.
+
+### What the thesis actually needs
+
+Looking at `research/structure.md`, Chapter 7 is figure-driven (6-10+ figures, ~4000 words) split into three sections:
+- **7.1 Alignment patterns across KD methods** — the core comparison
+- **7.2 When alignment explains performance** — the explanatory payoff
+- **7.3 Failure cases and limitations** — where the lens breaks
+
+The thesis question is: *"What structural properties of neural network representations enable effective knowledge distillation?"* The analysis must answer this by showing whether distilled students' representations converge toward the teacher's, and whether that convergence predicts performance.
+
+### What alpha taught us about the metrics
+
+Looking at the 9 existing metrics with fresh eyes:
+
+1. **PCA variance curves** — Show representation compactness. Useful but not directly about alignment. In charlie, the interesting question becomes: does higher alpha force representations into lower-dimensional subspaces?
+
+2. **Effective dimensionality** — The scalar extracted from PCA. This is the metric most likely to show clean alpha trends because it's a single number per (model, layer). Perfect for alpha sweep plots.
+
+3. **CKA same-layer** — The headline alignment metric. Directly measures "how similar is this student's layer to the teacher's." This is the first thing anyone will look at. Must be the centerpiece of the alpha sweep.
+
+4. **CKA cross-layer** — 3x3 heatmaps are powerful but don't scale to 24+ models. For charlie, these should be per-method (one figure per method, subplotted across alphas) rather than per-student. Alternatively: summarise as "off-diagonal CKA" to detect depth misalignment.
+
+5. **Principal angles** — Geometrically detailed but hard to summarise across many models. The curve shape matters more than the values. For charlie: consider reducing to a scalar (mean angle, or angle at component k) for the sweep analysis.
+
+6. **ICA correlation** — The heatmaps are per-seed and don't average, so they're inherently qualitative. The summary stats (mean matched correlation, count strong) are quantitative. For charlie: keep summaries, drop per-model heatmaps (too many), maybe show one representative heatmap per method at alpha=0.5.
+
+7. **Class separability (Fisher)** — Supervised metric that complements the unsupervised alignment metrics. Key question: does forcing alignment (high alpha) *help or hurt* class separation? This could show the tension between mimicking the teacher and learning discriminative features.
+
+8. **PCA scatter** — Purely visual, single-seed, layer 3 only. Useful for talks and intuition but not for systematic comparison. Keep as a qualitative supplement, not a core analysis.
+
+### What charlie needs that alpha didn't
+
+**The alpha dimension changes everything.** Alpha is a continuous control knob on KD pressure. The thesis question becomes operational: *as we turn up KD pressure, what happens to representation geometry?*
+
+This suggests three tiers of analysis:
+
+#### Tier 1: Per-method deep dive (carry-forward from alpha, adapted)
+These are the existing 9 metrics, but now shown *per method* with alpha as a parameter. Each method gets its own set of figures (or we facet by method within a single figure). Key change from alpha: instead of comparing "teacher vs logit vs factor" we're comparing "teacher vs method-at-alpha-0.25 vs method-at-alpha-0.5 vs method-at-alpha-0.75 vs method-at-alpha-0.95".
+
+This is still useful but the figures get crowded with 4 alpha levels + teacher + pure baseline = 6 lines. Manageable.
+
+For the thesis, probably pick 1-2 representative methods per metric rather than showing all 6. The full set goes in an appendix or supplementary.
+
+#### Tier 2: Alpha sweep summaries (new for charlie)
+These are the analyses that treat alpha as the x-axis:
+
+- **Alpha sweep line plots**: For each (metric, layer, dataset), plot metric value (y) vs alpha (x), one line per method. With 3 seeds, show mean +/- std shading. This is the most important new figure type — it directly answers "does more KD pressure increase alignment?"
+
+  Metrics to sweep: CKA same-layer, effective dim, Fisher criterion, mean ICA matched correlation, mean principal angle. That's 5 metrics x 3 layers x 4 datasets = 60 plots if exhaustive. For the thesis, show layer 3 for all metrics on CIFAR-100 (the hardest task), and put other layers/datasets in appendix.
+
+- **Method x alpha heatmap**: For each (metric, layer, dataset), a 6x4 grid (method rows, alpha cols). Cell color = metric value. Gives a complete comparison at a glance. These are compact and information-dense — ideal for the thesis.
+
+- **Accuracy vs alignment scatter**: The capstone figure. X = some alignment metric (CKA layer 3 is the obvious choice), Y = test accuracy. Each point = one (method, alpha, seed) combination. Color by method. This directly tests the thesis question: *does better alignment predict better accuracy?*
+
+  If the scatter shows a clear positive correlation, that's strong evidence for the representation-alignment explanation of KD. If it's noisy or method-dependent, that's equally interesting — it suggests the linear-alignment lens has limits (material for section 7.3).
+
+#### Tier 3: Targeted investigations (if patterns emerge)
+These depend on what we see in Tiers 1-2:
+
+- **Method-specific deep dives**: If one method shows anomalous behaviour (e.g. RKD with the fixed weights — does it now behave normally?), create a focused comparison.
+
+- **Dataset difficulty interaction**: Do the alpha trends differ between CIFAR-10 (easy, 10 classes) and CIFAR-100 (hard, 100 classes)? The teacher-student accuracy gap differs hugely between them. SVHN (digit recognition, different domain) and TinyImageNet (natural images, 200 classes) add more context.
+
+- **Layer-specific effects**: Feature-based methods (AT, FitNets, FT, NST) explicitly target intermediate layers, while logit KD and RKD only act on the final representation. Do we see stronger alignment at targeted layers?
+
+### extract.py design
+
+The extraction step is straightforward and doesn't need creativity:
+
+1. Walk `experiments/` directory tree, find all completed experiments (status.json says completed, best.pth exists)
+2. Load model, run test set, GAP-pool intermediate representations
+3. Save as .npz with consistent naming: `{method}_a{alpha}_s{seed}.npz` for KD, `teacher_s{seed}.npz` and `pure_s{seed}.npz` for baselines
+
+Key design choice: **save per-dataset** (same as alpha), so `representations/Cifar100/logit_a0.5_s0.npz` etc. This keeps files small and allows re-running extraction for a single dataset.
+
+### analyze.py design
+
+The big question is how to structure the code to handle 20+ model configurations without the hardcoded dicts becoming unmanageable.
+
+**Approach: dynamic model registry.** Scan the representations directory, parse filenames, build model configs automatically. Group by method. Generate colors and display names programmatically. The analysis functions receive a structured config object instead of hardcoded globals.
+
+**Figure organisation:**
+```
+figures/{dataset}/
+├── per_method/
+│   ├── logit/
+│   │   ├── pca_variance.png
+│   │   ├── cka_cross_layer.png
+│   │   └── ...
+│   ├── factor_transfer/
+│   └── ...
+├── sweeps/
+│   ├── alpha_sweep_cka_same_layer.png
+│   ├── alpha_sweep_effective_dim.png
+│   ├── alpha_sweep_fisher.png
+│   ├── method_alpha_heatmap_cka.png
+│   └── accuracy_vs_alignment.png
+└── summary/
+    ├── pca_scatter.png        (representative, teacher PC basis)
+    └── accuracy_table.txt     (console + file)
+```
+
+### What maps to the thesis
+
+For Chapter 7 (~10 figures budget):
+- **7.1**: 2-3 alpha sweep line plots (CKA, effective dim, Fisher — layer 3, CIFAR-100), 1 method x alpha heatmap
+- **7.2**: 1 accuracy vs alignment scatter, 1 CKA same-layer bar chart (best alpha per method vs baselines)
+- **7.3**: 1-2 figures showing where alignment doesn't predict accuracy (specific methods/layers where the lens fails)
+- **Appendix**: Full per-method deep dives, all datasets, all layers
+
+### Implementation priority
+
+1. **extract.py** — Must work before anything else. Auto-discovery, robust to incomplete experiments.
+2. **Alpha sweep plots** (Tier 2) — The highest-value new analysis. Directly thesis-relevant.
+3. **Accuracy vs alignment scatter** — The capstone figure.
+4. **Method x alpha heatmaps** — Compact comparison.
+5. **Adapted per-method metrics** (Tier 1) — Important but lower priority; the alpha sweep captures most of the signal in scalar form.
+6. **Summary table / print output** — Quick sanity check.
+
+### Nonlinear methods — the unexplored half
+
+Every metric in the current pipeline is fundamentally linear. PCA, effective dimensionality (PCA eigenvalues), linear CKA (dot-product kernel), principal angles (SVD), ICA, Fisher criterion — all assume representations live in a flat Euclidean subspace. This isn't wrong, it's a design choice inherited from the thesis framing. But it is a blind spot worth naming explicitly.
+
+KD methods do not operate on linear structure. RKD trains on pairwise distances. NST trains on Gram matrices. FitNets and AT use L2 and attention norms that are sensitive to nonlinear geometry. The linear analysis may be *missing the mechanism* — a student could learn the same semantic manifold as the teacher but rotated or warped, appearing unaligned by CKA while actually being geometrically equivalent.
+
+Below are the nonlinear methods worth including in the exploration, ordered by thesis relevance:
+
+#### 1. Kernel CKA (RBF) vs Linear CKA — the cleanest extension
+
+The current CKA uses a linear kernel: `K(X) = XX^T`. Kornblith et al. (2019) also define an RBF variant: `K(X)_ij = exp(-||xi-xj||² / 2σ²)`. Switching kernels requires changing ~3 lines of code.
+
+The comparison is the important part:
+- **Both high**: representations are linearly aligned (strong case for the thesis claim)
+- **Linear low, RBF high**: representations are topologically similar but in different linear coordinates — the student learned the same thing via a nonlinear transformation. This would mean KD *does* align representations, but not in the way linear probes can detect.
+- **Both low**: no alignment at any level
+- **Linear high, RBF low**: pathological case, probably doesn't occur in practice
+
+This creates a genuine taxonomy of alignment modes. It also directly speaks to the thesis question: *are the structural properties enabling KD fundamentally linear or nonlinear?* This is probably the highest-value nonlinear addition because it produces quantitative, per-layer numbers that slot directly into the existing alpha sweep and heatmap figures. Add a column to the method × alpha heatmap: "delta CKA" = RBF CKA − linear CKA. Methods with positive delta are inducing nonlinear alignment that the linear probe misses.
+
+#### 2. UMAP latent space visualization
+
+UMAP (McInnes et al. 2018) is a nonlinear dimensionality reduction that preserves local manifold topology. It produces 2D projections where genuine cluster structure emerges even when PCA scatter looks like a blob.
+
+The key application is **teacher-space projection**: fit UMAP on the teacher's layer 3 representations, then transform each student's representations through the *same fitted embedding*. Students that have aligned with the teacher will land near the correct teacher clusters. Students that haven't will scatter or collapse into wrong regions. This is a direct visual test of the alignment hypothesis that works at 100 and 200 classes where PCA scatter breaks completely.
+
+Specific to the class-count problem:
+- **CIFAR-10/SVHN (10 classes)**: PCA scatter is still fine here, UMAP optional
+- **CIFAR-100 (100 classes)**: Color by superclass (20 superclasses × 5 subclasses each = 20 readable colors). Asks whether KD preserves coarse semantic structure even when fine-grained accuracy varies.
+- **TinyImageNet (200 classes)**: Topology itself is the signal — you're not reading individual colors, you're looking at cluster compactness, separation, whether teacher and student manifolds have the same shape. If a KD method fails on TinyImageNet (expected for harder tasks), the UMAP will likely show cluster collapse or smearing.
+
+One more use: UMAP of the *model space* rather than the representation space — run UMAP on the vectors of per-layer metric values (CKA, effective dim, Fisher) across all 312 models. This might cluster models by method in a nonlinear way invisible to individual metric comparisons.
+
+**Practical notes**: `umap-learn` package. Our representations are already GAP-pooled to (N, 64) — UMAP on 10k × 64 runs in seconds. Parametric UMAP allows transforming new points into a fitted embedding; standard UMAP requires fitting jointly, but `transform()` on the fitted object gives a reasonable approximation.
+
+#### 3. Intrinsic dimensionality: TwoNN estimator
+
+The current `effective_dim` uses PCA — it measures the number of linear dimensions needed to explain most variance. This is the *extrinsic* dimensionality of the linear subspace.
+
+The *intrinsic* dimensionality is different: how many dimensions does the data manifold actually require, independent of the embedding? A representation with PCA effective dim = 20 might lie on a curved 5-dimensional manifold — the remaining 15 dimensions are just the curvature of that manifold.
+
+The TwoNN estimator (Facco et al. 2017) estimates intrinsic dimension from the ratio of the first and second nearest-neighbour distances. It's ~10 lines of numpy. The gap between PCA effective dim and TwoNN intrinsic dim measures *manifold curvature* — how nonlinear the representation geometry is.
+
+KD question: does distillation change the intrinsic dimensionality separately from the linear effective dimensionality? It's plausible that logit KD (which operates on outputs only) increases linear alignment (matching CKA) without changing intrinsic dimension, while FitNets (which explicitly matches intermediate activations) changes the actual manifold shape.
+
+#### 4. Representational Similarity Analysis (RSA) with Spearman correlation
+
+Compute the N×N pairwise distance matrix for each model's representations (RSM — representational similarity matrix). Compare teacher RSM to student RSM using Spearman rank correlation. This is fully nonlinear (rank-based) and captures ordinal geometric structure: *are the same pairs of samples close/far in teacher and student space?*
+
+This has a direct connection to RKD: RKD explicitly trains the student to match the teacher's pairwise distances. RSA with Spearman correlation is the evaluation metric that directly tests whether RKD achieves its stated objective. If RKD at alpha=0.95 has high Spearman RSM correlation but lower linear CKA, it means RKD successfully aligns relational structure without replicating the exact linear subspace — a nuanced and specific finding.
+
+#### 5. k-NN probing as a nonlinear Fisher complement
+
+The Fisher criterion measures linear class separability. A k-NN classifier on the same representations measures nonlinear separability (the decision boundary can be arbitrarily complex). Running both and comparing gives:
+
+- **Fisher high, k-NN high**: linearly well-structured representations
+- **Fisher low, k-NN high**: nonlinearly separable but linear probe misses it
+- **Fisher high, k-NN low**: unusual — linear structure without neighborhood coherence
+- **Fisher low, k-NN low**: representations do not separate classes at all
+
+The second case is particularly interesting for KD: a student might sacrifice linear separability to match the teacher's representation geometry, while retaining (or even improving) overall discriminability in a nonlinear sense. This would be invisible to Fisher alone.
+
+Implementation: scikit-learn `KNeighborsClassifier(n_neighbors=5)` on the extracted representations. Runs in seconds.
+
+#### What to skip (and why)
+
+- **t-SNE**: UMAP is strictly better — more faithful to global structure, reproducible with a fixed seed, and faster. No reason to use t-SNE if UMAP is available.
+- **Persistent homology / TDA**: Principled but requires expertise to interpret, hard to calibrate, and there's no clear a priori hypothesis about what topological features should look like. Out of scope unless a very specific finding demands it.
+- **MINE / mutual information estimation**: Neural estimators are noisy and hard to calibrate across the 312 model scale. k-NN MI estimators (Kraskov) are more stable but add a hyperparameter (k) that changes results. The interpretational overhead isn't worth it at this stage.
+- **Deep CCA / kernel CCA**: Overkill given existing CKA. Linear CKA + RBF CKA covers the essential linear vs nonlinear comparison without introducing a learned component.
+
+#### The thesis framing
+
+If nonlinear analysis is included, the natural framing is a side-by-side comparison: "we find that [method X] shows low linear CKA but high kernel CKA, suggesting alignment is occurring at a nonlinear geometric level that the linear probe cannot detect." This reframes a potential negative result (low CKA) into a nuanced positive finding.
+
+Alternatively, if all methods show consistent linear and nonlinear alignment (or neither), that itself validates the linear analysis as sufficient — confirming that the linear lens is appropriate for this problem.
+
+**These methods should be included in the initial exploration but flagged as optional for the final thesis** — include them in analyze.py as separate functions, run them on all data, and decide based on whether the results add something the linear metrics don't already say.
+
+### Open questions
+
+- Should we compute CKA between *all pairs of students* (not just teacher-student)? This would show whether different KD methods converge to similar representations regardless of mechanism. Expensive but interesting.
+- Should the accuracy metric come from stored logits (like alpha) or from status.json max_acc? Using logits is more principled (same test set, computed during extraction), but requires the extraction step to run first.
+- ICA is slow and has convergence issues. For 312 models x 3 layers, that's ~936 ICA fits. May need to be selective (e.g. only seed 0, or only CIFAR-100).
+- Does the linear vs nonlinear CKA gap (kernel CKA − linear CKA) correlate with KD method type? The prediction is that relational methods (RKD) and attention-based methods (AT, NST) show larger gaps than output-matching methods (logit KD).
+
+# Notes from user:
+
 1. plot_experiments.py should be in toolbox/ 
 2. tools.py should be in toolbox/ with in appropriate name
+3. The train.py and runner.py need to be moved to toolbox/. Correct all other pathing logic so it doesn't break.
 
-NB: Something after experiment charlie. The train.py and runner.py need to be moved to toolbox/. Correct all other pathing logic so it doesn't break.
+# Note from user:
+- In cron.log, it should say which experiments were skipped
+```
+sent 108,392 bytes  received 25,852,111 bytes  2,076,840.24 bytes/sec
+total size is 289,017,891  speedup is 11.13
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1852) [generator=3.4.1]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regenerating plots...
+Plotted 22/30 experiments (8 skipped)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pushing code to CHPC...
+sending incremental file list
+toolbox/logs/cron.log
+```

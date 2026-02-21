@@ -19,10 +19,14 @@
   This mirrors what was done for experiment_alpha — archive everything before starting fresh.
 - Current experiment structure: `analysis/experiment_alpha/` (archived), `analysis/experiment_beta/` (active).
 
-## Active Focus: Plan.md + Progress.md
+## Active Focus: tracker/Plan.md + tracker/Progress.md
 
-- We are actively working through `Plan.md` (the reference — do not modify) and `Progress.md` (the living tracker).
+- We are actively working through `tracker/Plan.md` (the reference — do not modify) and `tracker/Progress.md` (the living tracker).
 - At the start of each session, read both files to understand current state.
-- When working on a task from Plan.md, update Progress.md with: exploration findings, code changes made, confirmation of fix, and any follow-up notes.
-- Mark tasks in Progress.md as done only after the fix is verified (not just written).
-- Update the Work Log table at the bottom of Progress.md with each action taken.
+- When working on a task from tracker/Plan.md, update tracker/Progress.md with: exploration findings, code changes made, confirmation of fix, and any follow-up notes.
+- Mark tasks in tracker/Progress.md as done only after the fix is verified (not just written).
+- Update the Work Log table at the bottom of tracker/Progress.md with each action taken.
+
+
+## Documentation
+- Keep the project README.md up to date with any relevant info you come across while working. It should serve as high level documentation for experiment_charlie. Once we move on to the next experiment, it will simply be moved to analysis/experiment_charlie with tracker/ and they will serve as archival documentation

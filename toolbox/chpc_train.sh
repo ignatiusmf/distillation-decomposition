@@ -58,7 +58,7 @@ case "$1" in
     # 4. Queue new/resumed jobs on CHPC
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     echo "Queuing jobs on CHPC..."
-    ssh $SSH_OPTS "$REMOTE" "cd $REMOTE_DIR && python runner.py"
+    ssh $SSH_OPTS "$REMOTE" "cd $REMOTE_DIR && python toolbox/runner.py"
 
     echo "==================== Done ======================="
     ;;

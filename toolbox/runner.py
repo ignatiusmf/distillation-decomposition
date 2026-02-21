@@ -68,7 +68,7 @@ tracker = ExperimentTracker(limit)
 def generate_pbs_script(python_cmd, experiment_name):
     if testing: return
 
-    template = Path('run.job').read_text()
+    template = (Path(__file__).parent / 'run.job').read_text()
     pbs_script = template.format(
         experiment_name=experiment_name,
         python_cmd=python_cmd
@@ -160,7 +160,7 @@ def check_path_and_skip(model, dataset, seed, distillation='none', teacher_model
 def generate_python_cmd(model, dataset, seed, distillation='none',
                         teacher_model=None, teacher_weights=None, alpha=0.5, temperature=4.0):
     """Generate the python command for training."""
-    cmd = f"python train.py --model {model} --dataset {dataset} --seed {seed}"
+    cmd = f"python toolbox/train.py --model {model} --dataset {dataset} --seed {seed}"
 
     if distillation != 'none':
         cmd += f" --distillation {distillation}"
