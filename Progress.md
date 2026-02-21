@@ -763,6 +763,20 @@ A script or one-liner that runs `git log --since="1 week ago" --oneline` and
 | 2026-02-21 | [10] | Created toolbox/chpc_train.sh (on/off/cron), mkdir toolbox/logs/ | Done |
 | 2026-02-21 | Verify | All Python files compile, factory tests pass, path consistency verified, archive confirmed | All checks pass |
 
+### Post-deployment fixes (commits after "Go time next")
+
+These fixes were made iteratively after the initial one-shot implementation was deployed to CHPC and issues were discovered during live training.
+
+| Date | Commit | Fix | Details |
+|------|--------|-----|---------|
+| 2026-02-21 | `4191110` | Loop order + walltime + rsync pull | **runner.py:** Reordered nested loops from `dataset→model→run` to `run→dataset→model` so all seed-0 baselines queue before seed-1, ensuring teachers finish before dependent KD jobs. **run.job:** Reduced walltime from 2:00:00 to 1:00:00 (AMP makes runs faster). **toolbox/rsync.sh:** Uncommented the pull command so experiment results sync back from CHPC. |
+| 2026-02-21 | `4a9830a` | File moves + path fixes + pbs_job_id preservation | **Moved** `plot_experiments.py` → `toolbox/plot_experiments.py`, `tools.py` → `toolbox/reorganize_tinyimagenet.py`. **toolbox/chpc_train.sh:** Fixed plot script path from `$PROJECT_DIR` to `$SCRIPT_DIR`. **toolbox/plot_experiments.py:** Fixed `default_dir` to resolve relative to script location (`Path(__file__).resolve().parent.parent`). **train.py:** `save_status()` now preserves `pbs_job_id` from existing status.json via `setdefault()`. Also changed `status['status']` to `status.get('status')` to avoid KeyError on fresh status files. |
+| 2026-02-21 | `1332e87` | Memory, venv, SSH, rsync, counters | **run.job:** Increased memory from 16gb to 24gb (SVHN OOM at ~18GB). **toolbox/chpc_train.sh:** Added `VENV_PYTHON` for plot generation (was using system Python, missing matplotlib). Added `SSH_OPTS="-o LogLevel=ERROR"` to suppress SSH warnings on all 3 connections. Added `--exclude='*.png'` to rsync pull's `--delete` (locally-generated plots were being deleted). Changed cron interval from 30min to 10min. Added section separator banners to cron output. **runner.py:** Replaced verbose per-experiment skip messages with `skipped`/`teacher_pending` counters and summary line. |
+| 2026-02-21 | `a0470b6` | ExperimentTracker dashboard | **runner.py:** Major refactor — added `ExperimentTracker` class that records all experiments into categorised lists (completed, running, queued, pending, teacher_pending). Replaced `should_skip()` with `get_experiment_status()` returning 'completed'/'running'/'pending'. `check_path_and_skip()` now records into tracker and continues past queue limit (marking as 'pending') instead of calling `exit()`. Prints completion %, breakdown, and lists running/queued experiments. **toolbox/chpc_train.sh:** Minor formatting tweaks to cron output banners. |
+| 2026-02-21 | `e14c882` | Alpha 0.95 added | **runner.py:** Changed `alphas = [0.25, 0.5, 0.75]` to `[0.25, 0.5, 0.75, 0.95]`. Alpha=1.0 was rejected because it zeroes out CE loss, which is problematic for intermediate-layer methods (FitNets, AT, FT, NST, RKD) where the classifier head gets no direct gradient. Total experiments: 312. |
+
+| 2026-02-21 | — | plot_experiments.py crash fix + logging | Added `try/except (EOFError, RuntimeError)` around `torch.load` in `load_metrics()` so corrupted checkpoints (rsync mid-write) are skipped with a warning instead of crashing the entire plot run. Added `plotted/total` summary and skip count to output. |
+
 ---
 
 ## Outstanding Tasks

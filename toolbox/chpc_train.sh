@@ -20,7 +20,7 @@ case "$1" in
   on)
     SCRIPT="$(realpath "$0")"
     # Remove any existing entry, then add fresh one
-    (crontab -l 2>/dev/null | grep -v "chpc_train.sh"; echo "*/10 * * * * $SCRIPT cron >> $LOG_DIR/cron.log 2>&1") | crontab -
+    (crontab -l 2>/dev/null | grep -v "chpc_train.sh"; echo "*/2 * * * * $SCRIPT cron > $LOG_DIR/cron.log 2>&1") | crontab -
     echo "Cron installed. Logs: $LOG_DIR/cron.log"
     ;;
   off)

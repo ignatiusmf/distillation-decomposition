@@ -19,7 +19,7 @@ import numpy as np
 
 
 def find_experiment_dirs(root: Path):
-    """Walk experiment tree and yield dirs containing metrics.json or checkpoint.pth."""
+    """Walk experiment tree and yield dirs containing status.json."""
     for status_file in root.rglob('status.json'):
         yield status_file.parent
 
@@ -31,11 +31,15 @@ def load_metrics(exp_dir: Path):
         with open(metrics_path) as f:
             return json.load(f)
 
-    # Fall back to checkpoint (contains metric arrays)
+    # Fall back to checkpoint (may be corrupted if rsync pulled mid-write)
     ckpt_path = exp_dir / 'checkpoint.pth'
     if ckpt_path.exists():
         import torch
-        ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+        try:
+            ckpt = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+        except (EOFError, RuntimeError):
+            print(f"  WARN: corrupted checkpoint, skipping: {exp_dir.name}")
+            return None
         return {
             'train_loss': ckpt.get('train_loss', []),
             'train_acc': ckpt.get('train_acc', []),
@@ -54,7 +58,7 @@ def plot_experiment(exp_dir: Path, metrics: dict):
     test_acc = metrics.get('test_acc', [])
 
     if not train_loss:
-        return
+        return False
 
     # Loss plot
     fig, ax = plt.subplots()
@@ -83,6 +87,7 @@ def plot_experiment(exp_dir: Path, metrics: dict):
     ax.legend()
     fig.savefig(exp_dir / 'Accuracy.png', dpi=100)
     plt.close(fig)
+    return True
 
 
 def main():
@@ -97,14 +102,19 @@ def main():
         print(f"Experiments directory not found: {root}")
         return
 
-    count = 0
-    for exp_dir in find_experiment_dirs(root):
+    dirs = list(find_experiment_dirs(root))
+    plotted, skipped = 0, 0
+    for exp_dir in dirs:
         metrics = load_metrics(exp_dir)
         if metrics:
-            plot_experiment(exp_dir, metrics)
-            count += 1
+            if plot_experiment(exp_dir, metrics):
+                plotted += 1
+            else:
+                skipped += 1
+        else:
+            skipped += 1
 
-    print(f"Generated plots for {count} experiments")
+    print(f"Plotted {plotted}/{len(dirs)} experiments ({skipped} skipped)")
 
 
 if __name__ == '__main__':
