@@ -227,7 +227,8 @@ alphas = [0.25, 0.5, 0.75, 0.95]
 datasets = ['Cifar100', 'Cifar10', 'SVHN', 'TinyImageNet']
 teacher_model = 'ResNet112'
 student_models = ['ResNet56']
-distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
+# distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'rkd', 'nst']
+distillation_methods = ['logit', 'factor_transfer', 'attention_transfer', 'fitnets', 'nst'] # Disabled RKD for now, it's broken
 
 for run in range(runs):
     for dataset in datasets:

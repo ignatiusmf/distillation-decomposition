@@ -28,6 +28,9 @@ Chronological record of all actions taken.
 - **[8] Add CHPC cluster details to methodology chapter (Ch6)** — See [thesis.md](thesis.md)
 - **[9] Generate weekly progress summary from git history** — See [thesis.md](thesis.md)
 - **[12] Design charlie analysis suite** — Design done ([analysis_design.md](../analysis/experiment_charlie/analysis_design.md)), implementation pending
+- **[13] Plot skip reasons in plot_experiments.py** — Show why each experiment is skipped (broken/in-progress/not-started) instead of just the path
+- **[14] Merge experiment_summary.py and plot_experiments.py** — Both scan experiments and generate figures; consolidate into one tool
+- **[15] RKD still broken** — 2 completed CIFAR-100 runs at alpha=0.75/0.95 show ~1.25% accuracy (random baseline). [11a] fix may be insufficient or experiments ran before fix. Needs investigation + possible force-restart.
 
 ---
 

@@ -31,5 +31,18 @@
 - **After every fix or change**, add an entry to the appropriate tracker category file documenting the problem and the fix. Every change should be traceable in tracker/.
 
 
+## Three Components
+
+The project has three distinct intellectual components:
+
+1. **Data** — Training results (312 ResNet56 students with varying KD methods, alphas, datasets, seeds). Lives in `experiments/` during training, archived to `analysis/experiment_*/experiments/` after.
+2. **Analysis methods** — The dimensionality reduction and representation comparison techniques themselves (PCA, ICA, CKA, UMAP, etc.). Deep elaboration and exploration of each method lives in `research/methods/`. This is method knowledge independent of our specific experiments.
+3. **Application** — Applying the analysis methods to our data. The experiment-specific analysis design, extract.py, analyze.py, and figures. Lives in `analysis/experiment_charlie/`.
+
+Key coupling files:
+- `toolbox/experiment_summary.py` — generates graphical progress figures to `analysis/experiment_charlie/`
+- `tracker/thesis.md` — tracks thesis writing tasks
+- `analysis/experiment_charlie/analysis_design.md` — specifies how methods (2) are applied to data (1)
+
 ## Documentation
 - Keep the project README.md up to date with any relevant info you come across while working. It should serve as high level documentation for experiment_charlie. Once we move on to the next experiment, it will simply be moved to analysis/experiment_charlie with tracker/ and they will serve as archival documentation

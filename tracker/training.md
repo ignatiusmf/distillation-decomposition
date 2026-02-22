@@ -121,3 +121,35 @@ Added decoder modules in `distillation.py` for the pre-training phase.
 **Resolution:** Split into `guided_layer=0` (student layer1, 16ch) and `hint_layer=1` (teacher layer2, 32ch). Connector becomes `Conv2d(16, 32, 1)` — matching the classic FitNets setup. Updated class and factory.
 
 **Files changed:** `toolbox/distillation.py`
+
+---
+
+## [15] RKD still broken — ~1% accuracy after full training
+
+**Status:** Not started
+
+**Description:** Two completed RKD experiments on CIFAR-100 both show random-baseline accuracy after 150 epochs — meaning the [11a] fix was insufficient (or these ran with old code).
+
+**Evidence:**
+- `experiments/Cifar100/rkd/alpha_0.75/ResNet112_to_ResNet56/0/` — completed, max_acc=1.25%
+- `experiments/Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0/` — completed, max_acc=1.25%
+- Train loss completely flat at ~1.78 for all 150 epochs (no learning)
+- Test CE loss ~5.4, which is *above* random baseline (~4.6 = log(100)) — model is actively getting worse than random
+
+**Diagnostic clues:**
+- Train loss of 1.78 from epoch 0 is consistent with `0.25 * CE(4.6) + 0.75 * RKD(0.84)` — so RKD loss starts ~0.84, which seems reasonable
+- But the loss never decreases → CE gradient is being fully cancelled or overwhelmed by RKD gradient
+- Test CE being worse-than-random suggests RKD gradients are actively pointing opposite to CE signal
+
+**Hypotheses to investigate:**
+1. These experiments ran before the [11a] fix was pushed (check commit timestamps vs job submission time in PBS logs)
+2. Weights `1.0/2.0` are still too large at high alpha (0.75/0.95) — the RKD gradient dominates CE when alpha is large
+3. The smooth_l1 loss on a B×B distance matrix has much higher gradient norm than scalar CE loss at alpha > ~0.5
+4. AMP + large matrix gradients (128×128) cause numerical issues in float16
+
+**What to do:**
+1. Verify whether the job ran with old (25/50) or new (1/2) weights by checking if the run dates predate the [11a] commit
+2. If old code: mark for re-run with `--force_restart` — these are `completed` so won't auto-re-run
+3. If new code: reduce weights further or add gradient clipping/normalization in `_pdist`/`_angle`, then force-restart
+
+**Files to look at:** `toolbox/distillation.py:328-381` (RKD class), `toolbox/train.py:241-261` (training loop)

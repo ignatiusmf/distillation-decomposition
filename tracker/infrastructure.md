@@ -105,3 +105,19 @@ These fixes were made iteratively after the initial implementation was deployed 
 | 2026-02-21 | — | Fix PBS queue detection bug | **runner.py:** `get_experiment_status()` only checked `_is_job_alive(job_id)` when `status == 'in_progress'`, but submitted jobs have `pbs_job_id` without `status: in_progress` (that's set by train.py when it actually starts). Jobs sitting in PBS queue (status Q) were invisible — runner.py thought they needed re-queuing. Fix: check `pbs_job_id` + `_is_job_alive()` regardless of status field. Also removed `teacher_pending` as a separate category — folded into `pending`. |
 | 2026-02-21 | — | Show PBS job state and elapsed time | **runner.py:** Replaced `_is_job_alive()` with `_get_job_info()` that parses `qstat -f` output for `job_state` (Q/R/etc) and `resources_used.walltime` (or `stime` fallback). `get_experiment_status()` now returns `(status, job_info)` tuple. Tracker stores job info for running experiments and displays as `[R 0:42:15] Cifar100/logit/...` in the summary. |
 | 2026-02-21 | — | Fix PYTHONPATH for toolbox imports | **run.job:** All new experiments failed with `ModuleNotFoundError: No module named 'toolbox'`. After moving `train.py` into `toolbox/`, `python toolbox/train.py` adds `toolbox/` to `sys.path` instead of the project root — so `from toolbox.models import ...` fails. Fix: added `export PYTHONPATH="$PWD:$PYTHONPATH"` after the `cd` in run.job. SVHN OOM (16gb→24gb already fixed) and TinyImageNet walltime (needs multiple re-queues, handled by checkpoint-resume) are pre-existing and self-healing. |
+
+---
+
+## [13] Plot skip reasons in plot_experiments.py
+
+**Status:** Not started
+
+**Description:** When `plot_experiments.py` skips an experiment, it just lists the path with no explanation. Should indicate *why* it was skipped — is it broken (corrupt checkpoint, missing files), still in progress, or not yet started? This makes the cron log output actionable instead of requiring manual investigation.
+
+---
+
+## [14] Merge experiment_summary.py and plot_experiments.py
+
+**Status:** Not started
+
+**Description:** `toolbox/experiment_summary.py` and `toolbox/plot_experiments.py` overlap significantly — both scan experiment directories and generate figures. They should be merged into a single script. `experiment_summary.py` generates overview figures (accuracy overview, progress grid) to `analysis/experiment_charlie/`. `plot_experiments.py` generates per-experiment accuracy/loss plots. Consolidate into one tool that does both.

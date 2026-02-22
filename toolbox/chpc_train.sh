@@ -40,10 +40,13 @@ case "$1" in
       "$REMOTE:$REMOTE_DIR/" "$PROJECT_DIR/"
 
     # 2. Regenerate plots locally
-    if [ -f "$SCRIPT_DIR/plot_experiments.py" ]; then
     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-      echo "Regenerating plots..."
+    echo "Regenerating plots..."
+    if [ -f "$SCRIPT_DIR/plot_experiments.py" ]; then
       "$VENV_PYTHON" "$SCRIPT_DIR/plot_experiments.py"
+    fi
+    if [ -f "$SCRIPT_DIR/experiment_summary.py" ]; then
+      "$VENV_PYTHON" "$SCRIPT_DIR/experiment_summary.py"
     fi
 
     # 3. Push code to CHPC

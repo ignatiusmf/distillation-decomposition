@@ -1,63 +1,68 @@
 =================================================
-========= Sat 21 Feb 2026 23:02:00 SAST =========
+========= Sun 22 Feb 2026 10:02:00 SAST =========
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Pulling experiments from CHPC...
 receiving incremental file list
-./
-experiments/Cifar100/fitnets/alpha_0.95/ResNet112_to_ResNet56/0/status.json
-experiments/Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0/
-experiments/Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0/errors
-experiments/Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0/logs
-experiments/Cifar100/rkd/alpha_0.75/ResNet112_to_ResNet56/0/status.json
-experiments/Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0/errors
-experiments/Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0/logs
+experiments/Cifar10/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar10/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar10/fitnets/alpha_0.75/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar10/fitnets/alpha_0.95/ResNet112_to_ResNet56/0/best.pth
+experiments/Cifar10/fitnets/alpha_0.95/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar10/fitnets/alpha_0.95/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar10/rkd/alpha_0.25/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar10/rkd/alpha_0.25/ResNet112_to_ResNet56/0/status.json
+experiments/Cifar10/rkd/alpha_0.5/ResNet112_to_ResNet56/0/checkpoint.pth
+experiments/Cifar10/rkd/alpha_0.5/ResNet112_to_ResNet56/0/status.json
 
-sent 320 bytes  received 7,079 bytes  2,114.00 bytes/sec
-total size is 303,401,850  speedup is 41,005.79
+sent 77,748 bytes  received 19,452,663 bytes  1,860,039.14 bytes/sec
+total size is 588,034,827  speedup is 30.11
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Regenerating plots...
-Skipped (14):
+Skipped (10):
   Cifar10/pure/ResNet112/1
   Cifar10/pure/ResNet112/2
+  Cifar10/rkd/alpha_0.75/ResNet112_to_ResNet56/0
+  Cifar10/rkd/alpha_0.95/ResNet112_to_ResNet56/0
+  Cifar10/nst/alpha_0.25/ResNet112_to_ResNet56/0
+  Cifar10/nst/alpha_0.5/ResNet112_to_ResNet56/0
+  Cifar10/nst/alpha_0.75/ResNet112_to_ResNet56/0
+  Cifar10/nst/alpha_0.95/ResNet112_to_ResNet56/0
   Cifar100/pure/ResNet112/2
   Cifar100/pure/ResNet56/2
-  Cifar100/factor_transfer/alpha_0.95/ResNet112_to_ResNet56/0
-  Cifar100/logit/alpha_0.95/ResNet112_to_ResNet56/0
-  Cifar100/attention_transfer/alpha_0.95/ResNet112_to_ResNet56/0
-  Cifar100/fitnets/alpha_0.95/ResNet112_to_ResNet56/0
-  Cifar100/rkd/alpha_0.75/ResNet112_to_ResNet56/0
-  Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0
-  Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0
-  Cifar100/nst/alpha_0.5/ResNet112_to_ResNet56/0
-  Cifar100/nst/alpha_0.75/ResNet112_to_ResNet56/0
-  Cifar100/nst/alpha_0.95/ResNet112_to_ResNet56/0
-Plotted 24/38 experiments (14 skipped)
+Plotted 52/62 experiments (10 skipped)
+Scanning /home/ignatius/Lab/studies/repos/distillation-decomposition/experiments...
+Found 62 experiments
+Generating figures...
+  Saved progress_grid.png
+  Saved accuracy_overview.png
+
+Experiment Charlie: 44/312 completed (14.1%)
+  In progress: 8
+  Not started: 260
+
+Figures saved to /home/ignatius/Lab/studies/repos/distillation-decomposition/analysis/experiment_charlie/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Pushing code to CHPC...
 sending incremental file list
+research/
+research/datasets/
+research/distillations/
+research/models/
 toolbox/logs/cron.log
 
-sent 1,787 bytes  received 58 bytes  527.14 bytes/sec
-total size is 360,325  speedup is 195.30
+sent 2,304 bytes  received 75 bytes  679.71 bytes/sec
+total size is 380,518  speedup is 159.95
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Queuing jobs on CHPC...
-python toolbox/train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation rkd --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.95
-Job submitted: 7001688.sched01
-python toolbox/train.py --model ResNet56 --dataset Cifar100 --seed 0 --distillation nst --teacher_model ResNet112 --teacher_weights experiments/Cifar100/pure/ResNet112/0/best.pth --alpha 0.25
-Job submitted: 7001689.sched01
-EXPERIMENT CHARLIE — 20/312 completed (6.4%)
-  Finished:           20
-  Not started:        282
-  Already on PBS:     8
-    - [Q] Cifar100/logit/alpha_0.95/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/factor_transfer/alpha_0.95/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/attention_transfer/alpha_0.95/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/fitnets/alpha_0.95/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/rkd/alpha_0.75/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/nst/alpha_0.5/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/nst/alpha_0.75/ResNet112_to_ResNet56/0
-    - [Q] Cifar100/nst/alpha_0.95/ResNet112_to_ResNet56/0
-  Queued this run:    2
-    - Cifar100/rkd/alpha_0.95/ResNet112_to_ResNet56/0
-    - Cifar100/nst/alpha_0.25/ResNet112_to_ResNet56/0
+EXPERIMENT CHARLIE — 40/264 completed (15.2%)
+  Finished:           40
+  Not started:        218
+  Already on PBS:     6
+    - [R 0:27:33] Cifar10/fitnets/alpha_0.75/ResNet112_to_ResNet56/0
+    - [R 0:27:33] Cifar10/fitnets/alpha_0.95/ResNet112_to_ResNet56/0
+    - [Q] Cifar10/nst/alpha_0.25/ResNet112_to_ResNet56/0
+    - [Q] Cifar10/nst/alpha_0.5/ResNet112_to_ResNet56/0
+    - [Q] Cifar10/nst/alpha_0.75/ResNet112_to_ResNet56/0
+    - [Q] Cifar10/nst/alpha_0.95/ResNet112_to_ResNet56/0
+  Queued this run:    0
 ==================== Done =======================

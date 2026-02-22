@@ -1,3 +1,17 @@
 {
-  "pbs_job_id": "7001682.sched01"
+  "status": "completed",
+  "epoch": 150,
+  "max_acc": 68.34,
+  "config": {
+    "model": "ResNet56",
+    "dataset": "Cifar100",
+    "seed": 0,
+    "distillation": "attention_transfer",
+    "teacher_model": "ResNet112",
+    "teacher_weights": "experiments/Cifar100/pure/ResNet112/0/best.pth",
+    "alpha": 0.95,
+    "temperature": 4.0,
+    "force_restart": false
+  },
+  "pbs_job_id": "7001706.sched01"
 }

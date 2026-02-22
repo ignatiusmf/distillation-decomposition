@@ -23,10 +23,22 @@ Tasks related to writing the MSc thesis. Can be done anytime.
 
 ---
 
-## [9] Generate weekly progress summary from git history
+## [9] Experiment summary and progress narrative
 
-**Status:** Not started
+**Status:** DONE
 
-**Description:** A script or one-liner that runs `git log --since="1 week ago" --oneline` and `git diff --stat HEAD~N` to produce a supervisor-friendly narrative. Focus on story and flow, not raw diffs.
+**Description:** Two deliverables:
 
-**Files to create:** Could be a script in `toolbox/` or just a documented one-liner.
+### A) Graphical experiment summary
+`toolbox/experiment_summary.py` — Scans `experiments/`, reads all status.json and metrics.json, generates figures to `analysis/experiment_charlie/`:
+- `progress_grid.png` — Completion grid (method x dataset, cells show alpha x seed status)
+- `accuracy_overview.png` — Bar chart of max accuracy for completed experiments by dataset
+
+```
+python toolbox/experiment_summary.py
+```
+
+### B) Git history narrative
+`tracker/worklog_narrative_2026-01-30_to_2026-02-21.md` — A ~1500-word narrative covering all work from Jan 30 to the current day, organized:
+
+**Files created:** `toolbox/experiment_summary.py`, `tracker/worklog_narrative_2026-01-30_to_2026-02-21.md`
